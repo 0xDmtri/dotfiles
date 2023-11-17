@@ -1,0 +1,16 @@
+# exclude all
+*/
+
+# include NVIM config
+!nvim/
+!nvim/**/*
+
+# ignore Lazy lock file
+nvim/lazy-lock.json
+
+# ignore luarc file
+nvim/lua/.luarc.json
+
+# include WEZTERM config
+!wezterm/
+!wezterm/**/*
