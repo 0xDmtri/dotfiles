@@ -1,10 +1,32 @@
 -- [[ Configure Transparent ]]
 
-require('transparent').setup({
-  extra_groups = { 'NormalFloat' },
-})
+local function setupTransparent()
+  require('transparent').setup({
+    extra_groups = { 'NormalFloat' },
+  })
 
--- [[ Hack Transparent Plugin ]]
+  -- check if fidget installed
+  local success, fidget = pcall(require, 'fidget')
+
+  -- if success pass blend to fidget accordingly
+  if success then
+    local opts = function()
+      if vim.g.transparent_enabled then
+        return { window = { winblend = 0 } }
+      else
+        return { window = { winblend = 100 } }
+      end
+    end
+
+    fidget.setup({
+      notification = opts()
+    })
+  end
+end
+
+-- call to setup Transparent and Fidget (if installed)
+setupTransparent()
+
 -- Define the function that wrapps TransparentEnable with
 -- transparent fidget borders
 local function toggleLucid()
