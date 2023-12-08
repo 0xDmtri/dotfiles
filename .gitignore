@@ -14,3 +14,7 @@ nvim/lua/.luarc.json
 # include WEZTERM config
 !wezterm/
 !wezterm/**/*
+
+# include TMUX config
+!tmux/
+!tmux/**/*
