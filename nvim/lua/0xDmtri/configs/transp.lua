@@ -2,7 +2,15 @@
 
 local function setupTransparent()
   require('transparent').setup({
-    extra_groups = { 'NormalFloat' },
+    extra_groups = {
+      'LspFloatWinNormal',
+      'NormalFloat',
+      'FloatBorder',
+      'TelescopeNormal',
+      'TelescopeBorder',
+      'SagaNormal',
+      'SagaBorder',
+    },
   })
 
   -- check if fidget installed
