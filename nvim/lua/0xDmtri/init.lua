@@ -73,7 +73,7 @@ require('lazy').setup({
           {
             'j-hui/fidget.nvim',
             config = function()
-              require('fidget').setup()
+              require('fidget').setup({})
             end
           },
         }
@@ -102,7 +102,7 @@ require('lazy').setup({
       'VonHeikemen/lsp-zero.nvim',
     },
     config = function()
-      -- [[ Configure Telescope ]]
+      -- [[ Configure LSP Saga]]
       require('0xDmtri.configs.saga')
     end,
   },
@@ -235,19 +235,28 @@ require('lazy').setup({
   },
 
   {
-    -- Better file tree
-    "nvim-neo-tree/neo-tree.nvim",
-    branch = "v3.x",
+    -- Chads' file explorer
+    "nvim-telescope/telescope-file-browser.nvim",
     dependencies = {
+      "nvim-telescope/telescope.nvim",
       "nvim-lua/plenary.nvim",
-      "nvim-tree/nvim-web-devicons",
-      "MunifTanjim/nui.nvim",
     },
-    config = function()
-      -- [[ Configure Neo Tree]]
-      require('0xDmtri.configs.neotree')
-    end,
   },
+
+  -- {
+  --   -- Better file tree
+  --   "nvim-neo-tree/neo-tree.nvim",
+  --   branch = "v3.x",
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-tree/nvim-web-devicons",
+  --     "MunifTanjim/nui.nvim",
+  --   },
+  --   config = function()
+  --     -- [[ Configure Neo Tree]]
+  --     require('0xDmtri.configs.neotree')
+  --   end,
+  -- },
 
   {
     -- File bookmarks
