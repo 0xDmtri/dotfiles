@@ -235,12 +235,17 @@ require('lazy').setup({
   },
 
   {
-    -- Chads' file explorer
-    "nvim-telescope/telescope-file-browser.nvim",
+    -- NvimTree file explorer
+    "nvim-tree/nvim-tree.lua",
+    version = "*",
+    lazy = false,
     dependencies = {
-      "nvim-telescope/telescope.nvim",
-      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
     },
+    config = function()
+      -- [[ Configure NvimTree ]]
+      require("0xDmtri.configs.nvimtree")
+    end,
   },
 
   -- {
