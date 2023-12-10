@@ -235,33 +235,19 @@ require('lazy').setup({
   },
 
   {
-    -- NvimTree file explorer
-    "nvim-tree/nvim-tree.lua",
-    version = "*",
-    lazy = false,
+    -- Better file tree
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
     dependencies = {
+      "nvim-lua/plenary.nvim",
       "nvim-tree/nvim-web-devicons",
+      "MunifTanjim/nui.nvim",
     },
     config = function()
-      -- [[ Configure NvimTree ]]
-      require("0xDmtri.configs.nvimtree")
+      -- [[ Configure Neo Tree]]
+      require('0xDmtri.configs.neotree')
     end,
   },
-
-  -- {
-  --   -- Better file tree
-  --   "nvim-neo-tree/neo-tree.nvim",
-  --   branch = "v3.x",
-  --   dependencies = {
-  --     "nvim-lua/plenary.nvim",
-  --     "nvim-tree/nvim-web-devicons",
-  --     "MunifTanjim/nui.nvim",
-  --   },
-  --   config = function()
-  --     -- [[ Configure Neo Tree]]
-  --     require('0xDmtri.configs.neotree')
-  --   end,
-  -- },
 
   {
     -- File bookmarks

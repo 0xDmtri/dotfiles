@@ -3,6 +3,10 @@
 require('neo-tree').setup({
   window = {
     position = 'right'
+  },
+
+  filesystem = {
+    use_libuv_file_watcher = true,
   }
 })
 
