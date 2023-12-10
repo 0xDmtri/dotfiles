@@ -9,11 +9,6 @@ require('telescope').setup {
             },
         },
     },
-    extensions = {
-        file_browser = {
-            hijack_netrw = true,
-        }
-    }
 }
 
 -- Enable telescope fzf native
@@ -38,10 +33,3 @@ vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
-
--- telescope file system bindings
-vim.keymap.set('n', '\\', ':Telescope file_browser<CR>', { noremap = true })
-vim.keymap.set('n', '<A-\\>', ':Telescope file_browser path=%:p:h select_buffer=true<CR>', { noremap = true })
-
--- load file browser extension
-require('telescope').load_extension('file_browser')
