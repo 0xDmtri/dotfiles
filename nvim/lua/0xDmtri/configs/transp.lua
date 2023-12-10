@@ -3,11 +3,21 @@
 local function setupTransparent()
   require('transparent').setup({
     extra_groups = {
+      -- Normals
       'LspFloatWinNormal',
       'NormalFloat',
       'FloatBorder',
+
+      -- GitSigns
+      'GitSignsAdd',
+      'GitSignsChange',
+      'GitSignsDelete',
+
+      -- Telescope
       'TelescopeNormal',
       'TelescopeBorder',
+
+      -- LspSaga
       'SagaNormal',
       'SagaBorder',
     },
