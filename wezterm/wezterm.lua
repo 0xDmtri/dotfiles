@@ -24,6 +24,9 @@ config.tab_bar_at_bottom = true
 -- Set Hack Nerd Font at main font
 config.font = wezterm.font 'Hack Nerd Font'
 
+-- Set default font size
+config.font_size = 11
+
 -- Disable dead keys
 config.use_dead_keys = false
 
