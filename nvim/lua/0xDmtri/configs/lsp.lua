@@ -41,9 +41,6 @@ end
 
 -- LSP settings on attach
 lsp_zero.on_attach(function(_, bufnr)
-    -- Default keymaps LSP Zero
-    lsp_zero.default_keymaps({ buffer = bufnr })
-
     -- LSP keymap
     nmap(bufnr, 'gr', '<cmd>Lspsaga finder ref<CR>', '[G]oto [R]eferences')
     nmap(bufnr, 'gd', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -79,6 +76,9 @@ vim.g.rustaceanvim = {
             nmap(bufnr, '<leader>a', '<cmd>RustLsp hover actions<CR>', '[A]ctions Hover')
             nmap(bufnr, '<leader>ca', '<cmd>RustLsp codeAction<CR>', '[C]ode [A]ction')
             nmap(bufnr, '<leader>cr', '<cmd>RustLsp runnables<CR>', '[C]argo [R]unnables')
+            nmap(bufnr, '<leader>ct', '<cmd>RustLsp openCargo<CR>', '[C]argo Toml')
+            nmap(bufnr, '<leader>p', '<cmd>RustLsp parentModule<CR>', '[P]arent Module')
+            nmap(bufnr, '<leader>e', '<cmd>RustLsp explainError<CR>', '[E]xplain Error')
         end,
         default_settings = {
             ['rust-analyzer'] = {
