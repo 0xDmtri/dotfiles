@@ -66,6 +66,11 @@ end)
 -- initialize rust_analyzer with rustaceanvim
 vim.g.rustaceanvim = {
     -- LSP configuration
+    tools = {
+        hover_actions = {
+            auto_focus = true,
+        },
+    },
     server = {
         capabilities = lsp_zero.get_capabilities(),
         standalone = false,
