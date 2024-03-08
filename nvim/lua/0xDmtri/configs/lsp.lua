@@ -93,14 +93,14 @@ vim.g.rustaceanvim = {
                     enable = true,
                 },
             }
-        }
+        },
     },
 }
 
 -- enable format on save
 lsp_zero.format_on_save({
     format_opts = {
-        async = false,
+        async = true,
         timeout_ms = 500,
     },
     servers = {
