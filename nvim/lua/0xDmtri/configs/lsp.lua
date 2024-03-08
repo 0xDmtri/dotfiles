@@ -41,6 +41,9 @@ end
 
 -- LSP settings on attach
 lsp_zero.on_attach(function(_, bufnr)
+    -- Default keymaps LSP Zero
+    lsp_zero.default_keymaps({ buffer = bufnr })
+
     -- LSP keymap
     nmap(bufnr, 'gr', '<cmd>Lspsaga finder ref<CR>', '[G]oto [R]eferences')
     nmap(bufnr, 'gd', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -62,6 +65,37 @@ lsp_zero.on_attach(function(_, bufnr)
     nmap(bufnr, ']d', '<cmd>Lspsaga diagnostic_jump_next<CR>', 'Go to next diagnostic msg')
     nmap(bufnr, '<leader>q', '<cmd>Lspsaga show_buf_diagnostics<CR>', 'Open diagnostic list')
 end)
+
+-- initialize rust_analyzer with rustaceanvim
+vim.g.rustaceanvim = {
+    -- LSP configuration
+    server = {
+        capabilities = lsp_zero.get_capabilities(),
+        standalone = false,
+        hover_actions = { auto_focus = true },
+        runnables = { use_telescope = true },
+        on_attach = function(_, bufnr)
+            -- Rust Specific keymaps
+            nmap(bufnr, '<leader>a', '<cmd>RustLsp hover actions<CR>', '[A]ctions Hover')
+            nmap(bufnr, '<leader>ca', '<cmd>RustLsp codeAction<CR>', '[C]ode [A]ction')
+            nmap(bufnr, '<leader>cr', '<cmd>RustLsp runnables<CR>', '[C]argo [R]unnables')
+        end,
+        default_settings = {
+            ['rust-analyzer'] = {
+                checkOnSave = {
+                    command = 'clippy',
+                    extraArgs = { '--all', '--', '-W', 'clippy::all' },
+                },
+                cargo = {
+                    loadOutDirsFromCheck = true,
+                },
+                procMacro = {
+                    enable = true,
+                },
+            }
+        }
+    },
+}
 
 -- enable format on save
 lsp_zero.format_on_save({
@@ -92,40 +126,6 @@ null_ls.setup({
         null_ls.builtins.diagnostics.solhint,
         null_ls.builtins.diagnostics.eslint_d,
     }
-})
-
--- initialize rust_analyzer with rust_tools
-require('rust-tools').setup({
-    server = {
-        on_attach = function(_, bufnr)
-            print('🦀')
-
-            -- Rust Specific keymaps
-            nmap(bufnr, '<leader>a', require('rust-tools').hover_actions.hover_actions, '[A]ctions Hover')
-            nmap(bufnr, '<leader>ca', require('rust-tools').code_action_group.code_action_group, '[C]ode [A]ction')
-            nmap(bufnr, '<leader>cr', require('rust-tools').runnables.runnables, '[C]argo [R]unnables')
-        end,
-
-        standalone = false,
-        capabilities = require('cmp_nvim_lsp').default_capabilities(),
-        settings = {
-            ['rust-analyzer'] = {
-                checkOnSave = {
-                    command = 'clippy',
-                    extraArgs = { '--all', '--', '-W', 'clippy::all' },
-                },
-                cargo = {
-                    loadOutDirsFromCheck = true,
-                },
-                procMacro = {
-                    enable = true,
-                },
-            }
-        }
-
-    },
-    hover_actions = { auto_focus = true },
-    runnables = { use_telescope = true }
 })
 
 -- nvim-cmp setup

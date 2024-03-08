@@ -204,14 +204,14 @@ require('lazy').setup({
 
   {
     -- Rust dev env
-    'simrat39/rust-tools.nvim',
+    'mrcjkb/rustaceanvim',
+    version = '^4',
     dependencies = {
       'neovim/nvim-lspconfig',
       'nvim-lua/plenary.nvim',
       'nvimdev/lspsaga.nvim',
     },
     ft = { 'rust' },
-    -- NOTE: configured inside LSP config
   },
 
   {
