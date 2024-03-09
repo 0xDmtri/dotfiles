@@ -94,14 +94,19 @@ vim.g.rustaceanvim = {
             ['rust-analyzer'] = {
                 checkOnSave = {
                     command = 'clippy',
-                    extraArgs = { '--all', '--', '-W', 'clippy::all' },
+                    extraArgs = { '--all', '--all-features', '--', '-W', 'clippy::all' },
                 },
                 cargo = {
                     loadOutDirsFromCheck = true,
+                    allFeatures = true,
                 },
                 procMacro = {
                     enable = true,
                 },
+                assist = {
+                    importMergeBehavior = 'last',
+                    importPrefix = 'by_self',
+                }
             }
         },
     },
@@ -110,12 +115,12 @@ vim.g.rustaceanvim = {
 -- enable format on save
 lsp_zero.format_on_save({
     format_opts = {
-        async = true,
+        async = false,
         timeout_ms = 500,
     },
     servers = {
         -- Langs that will use null-ls for formatting
-        ['null-ls'] = { 'javascript', 'typescript', 'python', 'solidity', },
+        ['null-ls'] = { 'javascript', 'typescript', 'python', 'solidity' },
 
         -- Langs that will use non-lsp formatters
         ['lua_ls'] = { 'lua' },
