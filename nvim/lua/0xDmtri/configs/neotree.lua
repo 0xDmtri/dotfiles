@@ -1,13 +1,13 @@
 -- [[ Configure Neotree]]
 
-require('neo-tree').setup({
-  window = {
-    position = 'right'
-  },
+require("neo-tree").setup({
+	window = {
+		position = "right",
+	},
 
-  filesystem = {
-    use_libuv_file_watcher = true,
-  }
+	filesystem = {
+		use_libuv_file_watcher = true,
+	},
 })
 
 vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
