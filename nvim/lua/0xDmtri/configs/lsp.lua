@@ -93,11 +93,10 @@ vim.g.rustaceanvim = {
 			["rust-analyzer"] = {
 				checkOnSave = {
 					command = "clippy",
-					extraArgs = { "--all", "--all-features", "--", "-W", "clippy::all" },
+					extraArgs = { "--all", "--", "-W", "clippy::all" },
 				},
 				cargo = {
 					loadOutDirsFromCheck = true,
-					allFeatures = true,
 				},
 				procMacro = {
 					enable = true,
