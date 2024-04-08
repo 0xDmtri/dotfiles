@@ -39,12 +39,19 @@ vim.opt.rtp:prepend(lazypath)
 -- Initialize Lazy plugin manager
 require("lazy").setup({
 
-	-- Git related plugins
-	"tpope/vim-fugitive",
-	"tpope/vim-rhubarb",
-
 	-- Detect tabstop and shiftwidth automatically
 	"tpope/vim-sleuth",
+
+	-- Git related plugins
+	{
+		"NeogitOrg/neogit",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"sindrets/diffview.nvim",
+			"nvim-telescope/telescope.nvim",
+		},
+		config = true,
+	},
 
 	-- LSP
 	{
