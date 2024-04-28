@@ -144,7 +144,7 @@ local cmp = require("cmp")
 local luasnip = require("luasnip")
 
 cmp.setup({
-	formatting = lsp_zero.cmp_format(),
+	formatting = lsp_zero.cmp_format({ details = true }),
 	snippet = {
 		expand = function(args)
 			luasnip.lsp_expand(args.body)
