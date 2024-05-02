@@ -131,7 +131,7 @@ null_ls.setup({
 	sources = {
 		-- Formattings
 		null_ls.builtins.formatting.forge_fmt,
-		null_ls.builtins.formatting.prettierd,
+		null_ls.builtins.formatting.prettier,
 		null_ls.builtins.formatting.stylua,
 
 		-- Diagnostics
