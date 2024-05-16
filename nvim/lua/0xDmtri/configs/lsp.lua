@@ -39,7 +39,7 @@ local nmap = function(bufnr, keys, func, desc)
 end
 
 -- LSP settings on attach
-lsp_zero.on_attach(function(_, bufnr)
+lsp_zero.on_attach(function(client, bufnr)
 	-- LSP keymap
 	nmap(bufnr, "gr", "<cmd>Lspsaga finder ref<CR>", "[G]oto [R]eferences")
 	nmap(bufnr, "gd", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
@@ -61,10 +61,14 @@ lsp_zero.on_attach(function(_, bufnr)
 	nmap(bufnr, "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>", "Go to next diagnostic msg")
 	nmap(bufnr, "<leader>q", "<cmd>Lspsaga show_buf_diagnostics<CR>", "Open diagnostic list")
 
-	-- -- if available, use inlay-hints
-	-- if client.server_capabilities.inlayHintProvider then
-	-- 	vim.lsp.inlay_hint.enable(bufnr, true)
-	-- end
+	-- if available, use inlay-hints
+	local toggle_inlay = function()
+		vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(), { bufnr })
+	end
+
+	if client.server_capabilities.inlayHintProvider then
+		nmap(bufnr, "<leader>\\h", toggle_inlay, "Show/hide inlay-[H]ints")
+	end
 end)
 
 -- initialize rust_analyzer with rustaceanvim
