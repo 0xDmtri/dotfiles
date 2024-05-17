@@ -61,13 +61,13 @@ lsp_zero.on_attach(function(client, bufnr)
 	nmap(bufnr, "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>", "Go to next diagnostic msg")
 	nmap(bufnr, "<leader>q", "<cmd>Lspsaga show_buf_diagnostics<CR>", "Open diagnostic list")
 
-	-- if available, use inlay-hints
+	-- if available, toggle inlay-hints
 	local toggle_inlay = function()
-		vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(), { bufnr })
+		vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(), { buffer = bufnr })
 	end
 
 	if client.server_capabilities.inlayHintProvider then
-		nmap(bufnr, "<leader>\\h", toggle_inlay, "Show/hide inlay-[H]ints")
+		vim.keymap.set({ "n", "i", "v" }, "<M-h>", toggle_inlay, { buffer = bufnr })
 	end
 end)
 
