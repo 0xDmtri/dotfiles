@@ -10,9 +10,9 @@ local lsp_zero = require("lsp-zero")
 require("mason").setup({})
 require("mason-lspconfig").setup({
 	-- make sure this servers installed via Mason
-	-- NOTE: rust-analyzer is installed locally!
 	ensure_installed = {
 		-- LSPs:
+		-- NOTE: rust-analyzer is installed via cargo
 		"lua_ls",
 		"tsserver",
 		"solidity_ls_nomicfoundation",
@@ -26,6 +26,22 @@ require("mason-lspconfig").setup({
 			lua_opts.settings.Lua.diagnostics = { disable = { "missing-fields" } }
 			require("lspconfig").lua_ls.setup(lua_opts)
 		end,
+	},
+})
+
+-- setup null-ls
+local null_ls = require("null-ls")
+null_ls.setup({
+	sources = {
+		-- Formattings
+		null_ls.builtins.formatting.forge_fmt,
+		null_ls.builtins.formatting.prettier,
+		null_ls.builtins.formatting.stylua,
+		null_ls.builtins.formatting.black,
+
+		-- Diagnostics
+		null_ls.builtins.diagnostics.solhint,
+		null_ls.builtins.diagnostics.mypy,
 	},
 })
 
@@ -126,20 +142,6 @@ lsp_zero.format_on_save({
 
 		-- Langs that will use non-lsp formatters
 		["rust-analyzer"] = { "rust" },
-	},
-})
-
--- setup null-ls
-local null_ls = require("null-ls")
-null_ls.setup({
-	sources = {
-		-- Formattings
-		null_ls.builtins.formatting.forge_fmt,
-		null_ls.builtins.formatting.prettier,
-		null_ls.builtins.formatting.stylua,
-
-		-- Diagnostics
-		null_ls.builtins.diagnostics.solhint,
 	},
 })
 
