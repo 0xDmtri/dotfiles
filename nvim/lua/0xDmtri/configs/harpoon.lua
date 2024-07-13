@@ -1,42 +1,66 @@
 -- [[ Configure Harpoon ]]
-local mark = require("harpoon.mark")
-local ui = require("harpoon.ui")
+
 local wk = require("which-key")
+local harpoon = require("harpoon")
 
-wk.register({
-	["<leader>h"] = { name = "+harpoon" },
-	["<leader>ha"] = { mark.add_file, "[H]arpoon [A]dd buffer" },
-	["<leader>hm"] = { ui.toggle_quick_menu, "[H]arpoon [M]enu" },
+harpoon:setup({})
 
-	["<leader>h1"] = {
+wk.add({
+	{ "<leader>h", group = "harpoon" },
+	{
+		"<leader>ha",
 		function()
-			ui.nav_file(1)
+			harpoon:list():add()
 		end,
-		"[H]arpoon file [1]",
+		desc = "[H]arpoon [A]dd buffer",
+		mode = "n",
 	},
-	["<leader>h2"] = {
+	{
+		"<leader>hm",
 		function()
-			ui.nav_file(2)
+			harpoon.ui:toggle_quick_menu(harpoon:list())
 		end,
-		"[H]arpoon file [2]",
+		desc = "[H]arpoon [M]enu",
+		mode = "n",
 	},
-	["<leader>h3"] = {
+	{
+		"<leader>h1",
 		function()
-			ui.nav_file(3)
+			harpoon:list():select(1)
 		end,
-		"[H]arpoon file [3]",
+		desc = "[H]arpoon file [1]",
+		mode = "n",
 	},
-	["<leader>h4"] = {
+	{
+		"<leader>h2",
 		function()
-			ui.nav_file(4)
+			harpoon:list():select(2)
 		end,
-		"[H]arpoon file [4]",
+		desc = "[H]arpoon file [2]",
+		mode = "n",
 	},
-
-	["<M-tab>"] = {
+	{
+		"<leader>h3",
 		function()
-			ui.nav_next()
+			harpoon:list():select(3)
 		end,
-		"which_key_ignore",
+		desc = "[H]arpoon file [3]",
+		mode = "n",
+	},
+	{
+		"<leader>h4",
+		function()
+			harpoon:list():select(4)
+		end,
+		desc = "[H]arpoon file [4]",
+		mode = "n",
+	},
+	{
+		"<M-tab>",
+		function()
+			harpoon:list():next()
+		end,
+		desc = "which_key_ignore",
+		mode = "n",
 	},
 })
