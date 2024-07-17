@@ -123,7 +123,6 @@ require("lazy").setup({
 	-- Useful plugin to show you pending keybinds.
 	{
 		"folke/which-key.nvim",
-		commit = "f29387d82055b091564b33a805fec8f1b52b39f9",
 		opts = {},
 	},
 
