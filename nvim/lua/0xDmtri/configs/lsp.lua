@@ -6,45 +6,6 @@ require("neodev").setup({})
 -- setup LSP-ZERO
 local lsp_zero = require("lsp-zero")
 
--- setup Mason and Mason-LspConfig
-require("mason").setup({})
-require("mason-lspconfig").setup({
-	-- make sure this servers installed via Mason
-	ensure_installed = {
-		-- LSPs:
-		-- NOTE: rust-analyzer is installed via cargo
-		"lua_ls",
-		"tsserver",
-		"solidity_ls_nomicfoundation",
-		"pyright",
-	},
-	handlers = {
-		lsp_zero.default_setup,
-		lua_ls = function()
-			local lua_opts = lsp_zero.nvim_lua_ls()
-			-- disable buggy alert of missing fields
-			lua_opts.settings.Lua.diagnostics = { disable = { "missing-fields" } }
-			require("lspconfig").lua_ls.setup(lua_opts)
-		end,
-	},
-})
-
--- setup null-ls
-local null_ls = require("null-ls")
-null_ls.setup({
-	sources = {
-		-- Formattings
-		null_ls.builtins.formatting.forge_fmt,
-		null_ls.builtins.formatting.prettier,
-		null_ls.builtins.formatting.stylua,
-		null_ls.builtins.formatting.black,
-
-		-- Diagnostics
-		null_ls.builtins.diagnostics.solhint,
-		null_ls.builtins.diagnostics.mypy,
-	},
-})
-
 -- helper for binds
 local nmap = function(bufnr, keys, func, desc)
 	if desc then
@@ -55,7 +16,7 @@ local nmap = function(bufnr, keys, func, desc)
 end
 
 -- LSP settings on attach
-lsp_zero.on_attach(function(client, bufnr)
+local lsp_attach = function(client, bufnr)
 	-- LSP keymap
 	nmap(bufnr, "gr", "<cmd>Lspsaga finder ref<CR>", "[G]oto [R]eferences")
 	nmap(bufnr, "gd", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
@@ -85,7 +46,7 @@ lsp_zero.on_attach(function(client, bufnr)
 	if client.server_capabilities.inlayHintProvider then
 		vim.keymap.set({ "n", "i", "v" }, "<M-h>", toggle_inlay, { buffer = bufnr })
 	end
-end)
+end
 
 -- initialize rust_analyzer with rustaceanvim
 vim.g.rustaceanvim = {
@@ -129,6 +90,49 @@ vim.g.rustaceanvim = {
 		},
 	},
 }
+
+-- apply extended config
+lsp_zero.extend_lspconfig({
+	capabilities = require("cmp_nvim_lsp").default_capabilities(),
+	lsp_attach = lsp_attach,
+	float_border = "rounded",
+	sign_text = true,
+})
+
+-- setup Mason and Mason-LspConfig
+require("mason").setup({})
+require("mason-lspconfig").setup({
+	-- make sure this servers installed via Mason
+	ensure_installed = {
+		-- LSPs:
+		-- NOTE: rust-analyzer is installed via cargo
+		"lua_ls",
+		"tsserver",
+		"solidity_ls_nomicfoundation",
+		"pyright",
+	},
+	handlers = {
+		function(server_name)
+			require("lspconfig")[server_name].setup({})
+		end,
+	},
+})
+
+-- setup null-ls
+local null_ls = require("null-ls")
+null_ls.setup({
+	sources = {
+		-- Formattings
+		null_ls.builtins.formatting.forge_fmt,
+		null_ls.builtins.formatting.prettier,
+		null_ls.builtins.formatting.stylua,
+		null_ls.builtins.formatting.black,
+
+		-- Diagnostics
+		null_ls.builtins.diagnostics.solhint,
+		null_ls.builtins.diagnostics.mypy,
+	},
+})
 
 -- enable format on save
 lsp_zero.format_on_save({

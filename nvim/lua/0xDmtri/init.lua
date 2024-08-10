@@ -57,7 +57,7 @@ require("lazy").setup({
 	-- LSP
 	{
 		"VonHeikemen/lsp-zero.nvim",
-		branch = "v3.x",
+		branch = "v4.x",
 		dependencies = {
 			-- LSP Support
 			{
@@ -186,7 +186,10 @@ require("lazy").setup({
 		-- Fuzzy Finder (files, lsp, etc)
 		"nvim-telescope/telescope.nvim",
 		branch = "0.1.x",
-		dependencies = { "nvim-lua/plenary.nvim" },
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-telescope/telescope-ui-select.nvim",
+		},
 		config = function()
 			-- [[ Configure Telescope ]]
 			require("0xDmtri.configs.telescope")
