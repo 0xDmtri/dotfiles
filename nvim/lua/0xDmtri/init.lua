@@ -215,7 +215,7 @@ require("lazy").setup({
 	{
 		-- Rust dev env
 		"mrcjkb/rustaceanvim",
-		version = "^4",
+		version = "^5",
 		lazy = false,
 		dependencies = {
 			"neovim/nvim-lspconfig",
