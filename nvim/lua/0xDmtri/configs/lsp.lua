@@ -48,76 +48,6 @@ local lsp_attach = function(client, bufnr)
 	end
 end
 
--- initialize rust_analyzer with rustaceanvim
-vim.g.rustaceanvim = {
-	-- LSP configuration
-	tools = {
-		hover_actions = {
-			auto_focus = true,
-		},
-	},
-	server = {
-		capabilities = lsp_zero.get_capabilities(),
-		standalone = false,
-		hover_actions = { auto_focus = true },
-		runnables = { use_telescope = true },
-		on_attach = function(_, bufnr)
-			-- Rust Specific keymaps
-			nmap(bufnr, "<leader>a", "<cmd>RustLsp hover actions<CR>", "[A]ctions Hover")
-			nmap(bufnr, "<leader>ca", "<cmd>RustLsp codeAction<CR>", "[C]ode [A]ction")
-			nmap(bufnr, "<leader>cr", "<cmd>RustLsp runnables<CR>", "[C]argo [R]unnables")
-			nmap(bufnr, "<leader>ct", "<cmd>RustLsp openCargo<CR>", "[C]argo Toml")
-			nmap(bufnr, "<leader>p", "<cmd>RustLsp parentModule<CR>", "[P]arent Module")
-			nmap(bufnr, "<leader>e", "<cmd>RustLsp explainError<CR>", "[E]xplain Error")
-		end,
-		default_settings = {
-			["rust-analyzer"] = {
-				checkOnSave = {
-					command = "clippy",
-					extraArgs = { "--all", "--", "-W", "clippy::all" },
-				},
-				cargo = {
-					loadOutDirsFromCheck = true,
-				},
-				procMacro = {
-					enable = true,
-				},
-				assist = {
-					importMergeBehavior = "last",
-					importPrefix = "by_self",
-				},
-			},
-		},
-	},
-}
-
--- apply extended config
-lsp_zero.extend_lspconfig({
-	capabilities = require("cmp_nvim_lsp").default_capabilities(),
-	lsp_attach = lsp_attach,
-	float_border = "rounded",
-	sign_text = true,
-})
-
--- setup Mason and Mason-LspConfig
-require("mason").setup({})
-require("mason-lspconfig").setup({
-	-- make sure this servers installed via Mason
-	ensure_installed = {
-		-- LSPs:
-		-- NOTE: rust-analyzer is installed via cargo
-		"lua_ls",
-		"tsserver",
-		"solidity_ls_nomicfoundation",
-		"pyright",
-	},
-	handlers = {
-		function(server_name)
-			require("lspconfig")[server_name].setup({})
-		end,
-	},
-})
-
 -- setup null-ls
 local null_ls = require("null-ls")
 null_ls.setup({
@@ -194,12 +124,97 @@ cmp.setup({
 			end
 		end, { "i", "s" }),
 	}),
-	sources = {
+	sources = cmp.config.sources({
 		{ name = "nvim_lsp" },
 		{ name = "luasnip" },
-		{ name = "buffer" },
-		{ name = "path" },
 		{ name = "crates" },
+	}, {
+		{ name = "buffer" },
+	}),
+})
+
+cmp.setup.cmdline({ "/", "?" }, {
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = {
+		{ name = "buffer" },
+	},
+})
+
+cmp.setup.cmdline(":", {
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = cmp.config.sources({
+		{ name = "path" },
+	}, {
 		{ name = "cmdline" },
+	}),
+})
+
+-- apply extended config to LspZero
+lsp_zero.extend_lspconfig({
+	capabilities = require("cmp_nvim_lsp").default_capabilities(),
+	lsp_attach = lsp_attach,
+	float_border = "rounded",
+	sign_text = true,
+})
+
+-- initialize rust_analyzer with rustaceanvim
+vim.g.rustaceanvim = {
+	-- LSP configuration
+	tools = {
+		hover_actions = {
+			auto_focus = true,
+		},
+	},
+	server = {
+		capabilities = lsp_zero.get_capabilities(),
+		standalone = false,
+		hover_actions = { auto_focus = true },
+		runnables = { use_telescope = true },
+		on_attach = function(_, bufnr)
+			-- Rust Specific keymaps
+			nmap(bufnr, "<leader>a", "<cmd>RustLsp hover actions<CR>", "[A]ctions Hover")
+			nmap(bufnr, "<leader>ca", "<cmd>RustLsp codeAction<CR>", "[C]ode [A]ction")
+			nmap(bufnr, "<leader>cr", "<cmd>RustLsp runnables<CR>", "[C]argo [R]unnables")
+			nmap(bufnr, "<leader>ct", "<cmd>RustLsp openCargo<CR>", "[C]argo Toml")
+			nmap(bufnr, "<leader>p", "<cmd>RustLsp parentModule<CR>", "[P]arent Module")
+			nmap(bufnr, "<leader>e", "<cmd>RustLsp explainError<CR>", "[E]xplain Error")
+		end,
+		default_settings = {
+			["rust-analyzer"] = {
+				checkOnSave = {
+					command = "clippy",
+					extraArgs = { "--all", "--", "-W", "clippy::all" },
+				},
+				cargo = {
+					loadOutDirsFromCheck = true,
+				},
+				procMacro = {
+					enable = true,
+				},
+				assist = {
+					importMergeBehavior = "last",
+					importPrefix = "by_self",
+				},
+			},
+		},
+	},
+}
+
+-- setup Mason and Mason-LspConfig
+require("mason").setup({})
+require("mason-lspconfig").setup({
+	-- make sure this servers installed via Mason
+	ensure_installed = {
+		-- LSPs:
+		-- NOTE: rust-analyzer is installed via cargo
+		"lua_ls",
+		"tsserver",
+		"solidity_ls_nomicfoundation",
+		"pyright",
+	},
+	handlers = {
+		function(server_name)
+			require("lspconfig")[server_name].setup({})
+		end,
 	},
 })
