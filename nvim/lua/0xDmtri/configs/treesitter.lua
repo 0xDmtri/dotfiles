@@ -14,6 +14,7 @@ require("nvim-treesitter.configs").setup({
 		"vimdoc",
 		"vim",
 		"solidity",
+		"func",
 		"markdown",
 		"markdown_inline",
 		"toml",
