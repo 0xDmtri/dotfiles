@@ -208,7 +208,7 @@ require("mason-lspconfig").setup({
 		-- LSPs:
 		-- NOTE: rust-analyzer is installed via cargo
 		"lua_ls",
-		"tsserver",
+		"ts_ls",
 		"solidity_ls_nomicfoundation",
 		"pyright",
 	},
