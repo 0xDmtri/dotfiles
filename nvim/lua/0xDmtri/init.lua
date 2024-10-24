@@ -298,5 +298,5 @@ require("lazy").setup({
 	},
 
 	-- Huff syntax highlighting
-	{ "wuwe1/vim-huff", lazy = false },
+	{ "mouseless0x/vim-huff", lazy = false },
 }, {})
