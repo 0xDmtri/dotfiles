@@ -8,6 +8,9 @@ vim.g.maplocalleader = " "
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+-- disable line wrap
+vim.opt.wrap = false
+
 -- Set highlight on search
 vim.o.hlsearch = false
 
