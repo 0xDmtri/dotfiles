@@ -60,7 +60,6 @@ null_ls.setup({
 
 		-- Diagnostics
 		null_ls.builtins.diagnostics.solhint,
-		null_ls.builtins.diagnostics.mypy,
 	},
 })
 
@@ -194,6 +193,13 @@ vim.g.rustaceanvim = {
 				assist = {
 					importMergeBehavior = "last",
 					importPrefix = "by_self",
+				},
+				imports = {
+					granularity = {
+						group = "crate", -- Group imports by crate
+					},
+					group_imports = "std", -- Group standard library imports separately
+					prefix_kind = "plain", -- Use plain paths for imports
 				},
 			},
 		},

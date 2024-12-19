@@ -55,6 +55,11 @@ vim.o.completeopt = "menuone,noselect"
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
+-- Sort diagnostic messages by severity
+vim.diagnostic.config({
+	severity_sort = true,
+})
+
 -- Python Neovim plugin
 vim.g.python3_host_prog = "/Users/dmtri/.pyenv/versions/nvim/bin/python"
 
