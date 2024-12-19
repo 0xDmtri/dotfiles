@@ -280,7 +280,7 @@ require("lazy").setup({
 		-- Transparent windows on demand!
 		"xiyaowong/transparent.nvim",
 		config = function()
-			-- [[Configure Transparent ]]
+			-- [[ Configure Transparent ]]
 			require("0xDmtri.configs.transp")
 		end,
 	},

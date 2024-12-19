@@ -200,10 +200,10 @@ vim.g.rustaceanvim = {
 	},
 }
 
--- setup Mason and Mason-LspConfig
+-- Setup Mason and Mason-LspConfig
 require("mason").setup({})
 require("mason-lspconfig").setup({
-	-- make sure this servers installed via Mason
+	-- Ensure these servers are installed via Mason
 	ensure_installed = {
 		-- LSPs:
 		-- NOTE: rust-analyzer is installed via cargo
@@ -214,7 +214,25 @@ require("mason-lspconfig").setup({
 	},
 	handlers = {
 		function(server_name)
-			require("lspconfig")[server_name].setup({})
+			if server_name == "lua_ls" then
+				require("lspconfig").lua_ls.setup({
+					settings = {
+						Lua = {
+							diagnostics = {
+								globals = { "vim" }, -- Avoid warnings for 'vim'
+								disable = { "missing-fields" }, -- Disable the specific warning
+							},
+							workspace = {
+								library = vim.api.nvim_get_runtime_file("", true), -- Make the server aware of Neovim runtime files
+								checkThirdParty = false, -- Avoid prompts about third-party libraries
+							},
+							telemetry = { enable = false }, -- Disable telemetry for privacy
+						},
+					},
+				})
+			else
+				require("lspconfig")[server_name].setup({})
+			end
 		end,
 	},
 })
