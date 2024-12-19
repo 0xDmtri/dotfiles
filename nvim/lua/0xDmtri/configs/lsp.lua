@@ -183,23 +183,22 @@ vim.g.rustaceanvim = {
 				checkOnSave = {
 					command = "clippy",
 					extraArgs = { "--all", "--", "-W", "clippy::all" },
+					allFeatures = true,
 				},
 				cargo = {
-					loadOutDirsFromCheck = true,
+					features = "all",
 				},
 				procMacro = {
 					enable = true,
-				},
-				assist = {
-					importMergeBehavior = "last",
-					importPrefix = "by_self",
 				},
 				imports = {
 					granularity = {
 						group = "crate", -- Group imports by crate
 					},
-					group_imports = "std", -- Group standard library imports separately
-					prefix_kind = "plain", -- Use plain paths for imports
+					prefix = "self", -- Use plain paths for imports
+				},
+				rustfmt = {
+					extraArgs = { "+nightly" },
 				},
 			},
 		},
