@@ -154,6 +154,7 @@ lsp_zero.extend_lspconfig({
 	lsp_attach = lsp_attach,
 	float_border = "rounded",
 	sign_text = true,
+	configure_diagnostics = true,
 })
 
 -- initialize rust_analyzer with rustaceanvim
