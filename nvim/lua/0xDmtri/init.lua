@@ -13,7 +13,7 @@
 =====================================================================
 
 --]]
---
+
 -- [[ Configure Core Settings]]
 
 -- Load default Keymaps, Settings and Colorscheme
