@@ -54,70 +54,82 @@ require("lazy").setup({
 		config = true,
 	},
 
+	-- Additional lua configuration, makes nvim stuff amazing!
+	{ "folke/neodev.nvim" },
+
 	-- LSP
 	{
-		"VonHeikemen/lsp-zero.nvim",
-		branch = "v4.x",
+		"neovim/nvim-lspconfig",
 		dependencies = {
-			-- LSP Support
+			-- Useful status updates for LSP
 			{
-				-- plugin to config lsp
-				"neovim/nvim-lspconfig",
+				"j-hui/fidget.nvim",
+				config = function()
+					require("fidget").setup({})
+				end,
+			},
+
+			-- Plugin to download remote lsp servers
+			{ "williamboman/mason.nvim", config = true },
+
+			-- Plugin to add mason lsp into lspconfig
+			{ "williamboman/mason-lspconfig.nvim" },
+
+			-- Rust dev env
+			{
+				"mrcjkb/rustaceanvim",
+				version = "^5",
+				lazy = false,
 				dependencies = {
-					-- Additional lua configuration, makes nvim stuff amazing!
-					"folke/neodev.nvim",
+					"nvim-lua/plenary.nvim",
+					"nvimdev/lspsaga.nvim",
+				},
+				ft = { "rust" },
+			},
 
-					-- plugins to download remote lsp servers
-					{ "williamboman/mason.nvim", config = true },
-					{ "williamboman/mason-lspconfig.nvim" },
-
-					-- LSP extention for formatting and linting
-					{
-						"nvimtools/none-ls.nvim",
-						dependencies = { "nvim-lua/plenary.nvim" },
-					},
-
-					-- Useful status updates for LSP
-					{
-						"j-hui/fidget.nvim",
-						config = function()
-							require("fidget").setup({})
-						end,
-					},
+			-- LSP extention for formatting and linting
+			{
+				"nvimtools/none-ls.nvim",
+				dependencies = {
+					"nvim-lua/plenary.nvim",
+					"nvimtools/none-ls-extras.nvim",
 				},
 			},
 
 			-- Autocompletion
-			{ "hrsh7th/nvim-cmp" },
-			{ "hrsh7th/cmp-nvim-lsp" },
-			{ "L3MON4D3/LuaSnip" },
+			{
+				"hrsh7th/nvim-cmp",
+				event = "InsertEnter",
+				dependencies = {
+					"hrsh7th/cmp-nvim-lsp", -- LSP source for nvim-cmp
+					"hrsh7th/cmp-buffer", -- Buffer source for nvim-cmp
+					"hrsh7th/cmp-path", -- Path source for nvim-cmp
+					"L3MON4D3/LuaSnip", -- Snippet engine
+					"saadparwaiz1/cmp_luasnip", -- Snippet source for nvim-cmp
+				},
+			},
+
+			-- VSCode style snippets
+			{ "rafamadriz/friendly-snippets" },
+
+			-- LSP Enhance Plugin
+			{
+				"nvimdev/lspsaga.nvim",
+				name = "lspsaga",
+				event = "LspAttach",
+				dependencies = {
+					"nvim-tree/nvim-web-devicons",
+					"nvim-treesitter/nvim-treesitter",
+				},
+				config = function()
+					require("0xDmtri.configs.saga")
+				end,
+			},
 		},
+		-- Apply config
 		config = function()
-			-- [[ Configure LSP ]]
 			require("0xDmtri.configs.lsp")
 		end,
-	},
-
-	{
-		-- LSP Enhance Plugin
-		"nvimdev/lspsaga.nvim",
-		name = "lspsaga",
-		event = "LspAttach",
-		dependencies = {
-			"nvim-tree/nvim-web-devicons",
-			"nvim-treesitter/nvim-treesitter",
-			"VonHeikemen/lsp-zero.nvim",
-		},
-		config = function()
-			-- [[ Configure LSP Saga]]
-			require("0xDmtri.configs.saga")
-		end,
-	},
-
-	{
-		-- Autocompletion
-		"hrsh7th/nvim-cmp",
-		dependencies = { "hrsh7th/cmp-nvim-lsp", "L3MON4D3/LuaSnip", "saadparwaiz1/cmp_luasnip" },
 	},
 
 	-- Useful plugin to show you pending keybinds.
@@ -126,8 +138,8 @@ require("lazy").setup({
 		opts = {},
 	},
 
+	-- Adds git releated signs to the gutter, as well as utilities for managing changes
 	{
-		-- Adds git releated signs to the gutter, as well as utilities for managing changes
 		"lewis6991/gitsigns.nvim",
 		event = "BufReadPre",
 		opts = {
@@ -155,8 +167,8 @@ require("lazy").setup({
 		end,
 	},
 
+	-- Set lualine as statusline
 	{
-		-- Set lualine as statusline
 		"nvim-lualine/lualine.nvim",
 		event = "ColorScheme",
 		opts = function()
@@ -167,8 +179,8 @@ require("lazy").setup({
 		end,
 	},
 
+	-- Add indentation guides even on blank lines
 	{
-		-- Add indentation guides even on blank lines
 		"lukas-reineke/indent-blankline.nvim",
 		main = "ibl",
 		opts = function()
@@ -182,8 +194,8 @@ require("lazy").setup({
 	-- "gc" to comment visual regions/lines
 	{ "numToStr/Comment.nvim", opts = {} },
 
+	-- Fuzzy Finder (files, lsp, etc)
 	{
-		-- Fuzzy Finder (files, lsp, etc)
 		"nvim-telescope/telescope.nvim",
 		branch = "0.1.x",
 		dependencies = {
@@ -191,65 +203,49 @@ require("lazy").setup({
 			"nvim-telescope/telescope-ui-select.nvim",
 		},
 		config = function()
-			-- [[ Configure Telescope ]]
 			require("0xDmtri.configs.telescope")
 		end,
 	},
 
+	-- Fuzzy Finder Algorithm which requires local dependencies to be built.
 	{
-		-- Fuzzy Finder Algorithm which requires local dependencies to be built.
 		"nvim-telescope/telescope-fzf-native.nvim",
 		build = "make",
 	},
 
+	-- Highlight, edit, and navigate code
 	{
-		-- Highlight, edit, and navigate code
 		"nvim-treesitter/nvim-treesitter",
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter-textobjects",
 		},
 		build = ":TSUpdate",
 		config = function()
-			-- [[ Configure Treesitter ]]
 			require("0xDmtri.configs.treesitter")
 		end,
 	},
 
+	-- Crates helper
 	{
-		-- Rust dev env
-		"mrcjkb/rustaceanvim",
-		version = "^5",
-		lazy = false,
-		dependencies = {
-			"neovim/nvim-lspconfig",
-			"nvim-lua/plenary.nvim",
-			"nvimdev/lspsaga.nvim",
-		},
-		ft = { "rust" },
-	},
-
-	{
-		-- Crates helper
 		"saecki/crates.nvim",
 		name = "crates",
 		event = { "BufRead Cargo.toml" },
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
-			-- [[ Configure Crates ]]
 			require("0xDmtri.configs.crates")
 		end,
 	},
 
+	-- Auto matching brackers
 	{
-		-- Auto matching brackers
 		"windwp/nvim-autopairs",
 		config = function()
 			require("nvim-autopairs").setup({})
 		end,
 	},
 
+	-- Better file tree
 	{
-		-- Better file tree
 		"nvim-neo-tree/neo-tree.nvim",
 		branch = "v3.x",
 		dependencies = {
@@ -258,35 +254,32 @@ require("lazy").setup({
 			"MunifTanjim/nui.nvim",
 		},
 		config = function()
-			-- [[ Configure Neo Tree]]
 			require("0xDmtri.configs.neotree")
 		end,
 	},
 
+	-- File bookmarks
 	{
-		-- File bookmarks
 		"ThePrimeagen/harpoon",
 		branch = "harpoon2",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 		},
 		config = function()
-			-- [[ Configure Harpoon ]]
 			require("0xDmtri.configs.harpoon")
 		end,
 	},
 
+	-- Transparent windows on demand
 	{
-		-- Transparent windows on demand!
 		"xiyaowong/transparent.nvim",
 		config = function()
-			-- [[ Configure Transparent ]]
 			require("0xDmtri.configs.transp")
 		end,
 	},
 
+	-- Context functions while scrolling
 	{
-		-- Context functions while scrolling
 		"nvim-treesitter/nvim-treesitter-context",
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter",
