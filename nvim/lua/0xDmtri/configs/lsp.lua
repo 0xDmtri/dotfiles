@@ -3,9 +3,6 @@
 -- Setup neovim dev tools for lua
 require("neodev").setup({})
 
--- setup LSP-ZERO
-local lsp_zero = require("lsp-zero")
-
 -- helper for binds
 local nmap = function(bufnr, keys, func, desc)
 	if desc then
@@ -17,7 +14,7 @@ end
 
 -- LSP settings on attach
 local lsp_attach = function(client, bufnr)
-	-- LSP keymap
+	-- LSP general keymaps
 	nmap(bufnr, "gr", "<cmd>Lspsaga finder ref<CR>", "[G]oto [R]eferences")
 	nmap(bufnr, "gd", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 	nmap(bufnr, "gD", "<cmd>Lspsaga finder def<CR>", "[G]oto [D]efinition")
@@ -38,6 +35,16 @@ local lsp_attach = function(client, bufnr)
 	nmap(bufnr, "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>", "Go to next diagnostic msg")
 	nmap(bufnr, "<leader>q", "<cmd>Lspsaga show_buf_diagnostics<CR>", "Open diagnostic list")
 
+	-- Rust Specific keymaps
+	if client.name == "rust_analyzer" then
+		nmap(bufnr, "<leader>a", "<cmd>RustLsp hover actions<CR>", "[A]ctions Hover")
+		nmap(bufnr, "<leader>ca", "<cmd>RustLsp codeAction<CR>", "[C]ode [A]ction")
+		nmap(bufnr, "<leader>cr", "<cmd>RustLsp runnables<CR>", "[C]argo [R]unnables")
+		nmap(bufnr, "<leader>ct", "<cmd>RustLsp openCargo<CR>", "[C]argo Toml")
+		nmap(bufnr, "<leader>p", "<cmd>RustLsp parentModule<CR>", "[P]arent Module")
+		nmap(bufnr, "<leader>e", "<cmd>RustLsp explainError<CR>", "[E]xplain Error")
+	end
+
 	-- if available, toggle inlay-hints
 	local toggle_inlay = function()
 		vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(), { buffer = bufnr })
@@ -48,8 +55,107 @@ local lsp_attach = function(client, bufnr)
 	end
 end
 
--- setup null-ls
+-- Get default capabilities for autocompletion
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+-- Setup Mason and Mason-LspConfig
+require("mason").setup({})
+require("mason-lspconfig").setup({
+	ensure_installed = {
+		"lua_ls",
+		"ts_ls",
+		"solidity_ls_nomicfoundation",
+		"pyright",
+	},
+	handlers = {
+		function(server_name)
+			-- Do not configure rust_analyzer as it will be configure via Rustaceanvim below
+			if server_name ~= "rust_analyzer" then
+				require("lspconfig")[server_name].setup({
+					on_attach = lsp_attach, -- Use your custom on_attach function
+					capabilities = capabilities, -- Pass extended capabilities
+				})
+			end
+		end,
+		["lua_ls"] = function()
+			require("lspconfig").lua_ls.setup({
+				on_attach = lsp_attach,
+				capabilities = capabilities,
+				settings = {
+					Lua = {
+						diagnostics = {
+							globals = { "vim" }, -- Avoid warnings for 'vim'
+							disable = { "missing-fields" }, -- Disable specific warnings
+						},
+						workspace = {
+							library = vim.api.nvim_get_runtime_file("", true), -- Make the server aware of Neovim runtime files
+							checkThirdParty = false, -- Avoid prompts about third-party libraries
+						},
+						telemetry = { enable = false }, -- Disable telemetry for privacy
+					},
+				},
+			})
+		end,
+	},
+})
+
+-- Initialize rust_analyzer with rustaceanvim
+vim.g.rustaceanvim = {
+	-- LSP configuration
+	tools = {
+		hover_actions = {
+			auto_focus = true,
+		},
+	},
+	server = {
+		capabilities = capabilities,
+		standalone = false,
+		hover_actions = { auto_focus = true },
+		runnables = { use_telescope = true },
+		on_attach = lsp_attach,
+		default_settings = {
+			["rust-analyzer"] = {
+				checkOnSave = {
+					command = "clippy",
+					extraArgs = { "--all", "--", "-W", "clippy::all" },
+					allFeatures = true,
+				},
+				cargo = {
+					features = "all",
+				},
+				procMacro = {
+					enable = true,
+				},
+				imports = {
+					granularity = {
+						group = "crate", -- Group imports by crate
+					},
+					prefix = "self", -- Use plain paths for imports
+				},
+				rustfmt = {
+					extraArgs = { "+nightly" },
+				},
+			},
+		},
+	},
+}
+
+-- Define preferred formatters for each filetype
+local formatters = {
+	-- Langs that will use null-ls for formatting
+	["javascript"] = "null-ls",
+	["typescript"] = "null-ls",
+	["python"] = "null-ls",
+	["solidity"] = "null-ls",
+	["lua"] = "null-ls",
+	-- Langs that will use non-lsp formatters
+	["rust"] = "rust_analyzer",
+}
+
+-- Setup null-ls
 local null_ls = require("null-ls")
+local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+
 null_ls.setup({
 	sources = {
 		-- Formattings
@@ -61,29 +167,36 @@ null_ls.setup({
 		-- Diagnostics
 		null_ls.builtins.diagnostics.solhint,
 	},
+	on_attach = function(client, bufnr)
+		if client.supports_method("textDocument/formatting") then
+			vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+			vim.api.nvim_create_autocmd("BufWritePre", {
+				group = augroup,
+				buffer = bufnr,
+				callback = function()
+					vim.lsp.buf.format({
+						async = false,
+						timeout_ms = 500,
+						filter = function(format_client)
+							local preferred_formatter = formatters[vim.bo.filetype]
+							if preferred_formatter then
+								return format_client.name == preferred_formatter
+							else
+								return true -- Fallback to any available formatter
+							end
+						end,
+					})
+				end,
+			})
+		end
+	end,
 })
 
--- enable format on save
-lsp_zero.format_on_save({
-	format_opts = {
-		async = false,
-		timeout_ms = 500,
-	},
-	servers = {
-		-- Langs that will use null-ls for formatting
-		["null-ls"] = { "javascript", "typescript", "python", "solidity", "lua" },
-
-		-- Langs that will use non-lsp formatters
-		["rust-analyzer"] = { "rust" },
-	},
-})
-
--- nvim-cmp setup
+-- Setup nvim-cmp
 local cmp = require("cmp")
 local luasnip = require("luasnip")
 
 cmp.setup({
-	formatting = lsp_zero.cmp_format({ details = false }),
 	snippet = {
 		expand = function(args)
 			luasnip.lsp_expand(args.body)
@@ -127,7 +240,7 @@ cmp.setup({
 		{ name = "nvim_lsp" },
 		{ name = "luasnip" },
 		{ name = "crates" },
-	}, {
+		{ name = "path" },
 		{ name = "buffer" },
 	}),
 })
@@ -143,102 +256,9 @@ cmp.setup.cmdline(":", {
 	mapping = cmp.mapping.preset.cmdline(),
 	sources = cmp.config.sources({
 		{ name = "path" },
-	}, {
 		{ name = "cmdline" },
 	}),
 })
 
--- apply extended config to LspZero
-lsp_zero.extend_lspconfig({
-	capabilities = require("cmp_nvim_lsp").default_capabilities(),
-	lsp_attach = lsp_attach,
-	float_border = "rounded",
-	sign_text = true,
-	configure_diagnostics = true,
-})
-
--- initialize rust_analyzer with rustaceanvim
-vim.g.rustaceanvim = {
-	-- LSP configuration
-	tools = {
-		hover_actions = {
-			auto_focus = true,
-		},
-	},
-	server = {
-		capabilities = lsp_zero.get_capabilities(),
-		standalone = false,
-		hover_actions = { auto_focus = true },
-		runnables = { use_telescope = true },
-		on_attach = function(_, bufnr)
-			-- Rust Specific keymaps
-			nmap(bufnr, "<leader>a", "<cmd>RustLsp hover actions<CR>", "[A]ctions Hover")
-			nmap(bufnr, "<leader>ca", "<cmd>RustLsp codeAction<CR>", "[C]ode [A]ction")
-			nmap(bufnr, "<leader>cr", "<cmd>RustLsp runnables<CR>", "[C]argo [R]unnables")
-			nmap(bufnr, "<leader>ct", "<cmd>RustLsp openCargo<CR>", "[C]argo Toml")
-			nmap(bufnr, "<leader>p", "<cmd>RustLsp parentModule<CR>", "[P]arent Module")
-			nmap(bufnr, "<leader>e", "<cmd>RustLsp explainError<CR>", "[E]xplain Error")
-		end,
-		default_settings = {
-			["rust-analyzer"] = {
-				checkOnSave = {
-					command = "clippy",
-					extraArgs = { "--all", "--", "-W", "clippy::all" },
-					allFeatures = true,
-				},
-				cargo = {
-					features = "all",
-				},
-				procMacro = {
-					enable = true,
-				},
-				imports = {
-					granularity = {
-						group = "crate", -- Group imports by crate
-					},
-					prefix = "self", -- Use plain paths for imports
-				},
-				rustfmt = {
-					extraArgs = { "+nightly" },
-				},
-			},
-		},
-	},
-}
-
--- Setup Mason and Mason-LspConfig
-require("mason").setup({})
-require("mason-lspconfig").setup({
-	-- Ensure these servers are installed via Mason
-	ensure_installed = {
-		-- LSPs:
-		-- NOTE: rust-analyzer is installed via cargo
-		"lua_ls",
-		"ts_ls",
-		"solidity_ls_nomicfoundation",
-		"pyright",
-	},
-	handlers = {
-		function(server_name)
-			if server_name == "lua_ls" then
-				require("lspconfig").lua_ls.setup({
-					settings = {
-						Lua = {
-							diagnostics = {
-								globals = { "vim" }, -- Avoid warnings for 'vim'
-								disable = { "missing-fields" }, -- Disable the specific warning
-							},
-							workspace = {
-								library = vim.api.nvim_get_runtime_file("", true), -- Make the server aware of Neovim runtime files
-								checkThirdParty = false, -- Avoid prompts about third-party libraries
-							},
-							telemetry = { enable = false }, -- Disable telemetry for privacy
-						},
-					},
-				})
-			else
-				require("lspconfig")[server_name].setup({})
-			end
-		end,
-	},
-})
+-- Load VSCode-style snippets
+require("luasnip.loaders.from_vscode").lazy_load()
