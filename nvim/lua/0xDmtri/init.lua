@@ -87,14 +87,11 @@ require("lazy").setup({
 				ft = { "rust" },
 			},
 
-			-- LSP extention for formatting and linting
-			{
-				"nvimtools/none-ls.nvim",
-				dependencies = {
-					"nvim-lua/plenary.nvim",
-					"nvimtools/none-ls-extras.nvim",
-				},
-			},
+			-- LSP extention for formatting
+			{ "stevearc/conform.nvim" },
+
+			-- LSP extention for linting
+			{ "mfussenegger/nvim-lint" },
 
 			-- Autocompletion
 			{

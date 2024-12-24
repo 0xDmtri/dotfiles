@@ -140,55 +140,40 @@ vim.g.rustaceanvim = {
 	},
 }
 
--- Define preferred formatters for each filetype
-local formatters = {
-	-- Langs that will use null-ls for formatting
-	["javascript"] = "null-ls",
-	["typescript"] = "null-ls",
-	["python"] = "null-ls",
-	["solidity"] = "null-ls",
-	["lua"] = "null-ls",
-	-- Langs that will use non-lsp formatters
-	["rust"] = "rust_analyzer",
+-- Setup Conform formatter
+require("conform").setup({
+	formatters_by_ft = {
+		-- Set specific formatters per language
+		lua = { "stylua" },
+		python = { "isort", "black" },
+		javascript = { "prettier" },
+		typescript = { "prettier" },
+		solidity = { "forge_fmt" },
+
+		-- Use LSP formatting if no specific formatters configured
+		default_format_opts = {
+			lsp_format = "fallback",
+		},
+
+		-- Trim whitespace if no other formatters configured,
+		-- and no LSP formatters found
+		["_"] = { "trim_whitespace" },
+	},
+	format_on_save = {
+		lsp_format = "fallback",
+		timeout_ms = 500,
+	},
+})
+
+-- Setup nvim-lint
+require("lint").linters_by_ft = {
+	markdown = { "vale" },
+	solidity = { "solhint" },
 }
 
--- Setup null-ls
-local null_ls = require("null-ls")
-local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
-
-null_ls.setup({
-	sources = {
-		-- Formattings
-		null_ls.builtins.formatting.forge_fmt,
-		null_ls.builtins.formatting.prettier,
-		null_ls.builtins.formatting.stylua,
-		null_ls.builtins.formatting.black,
-
-		-- Diagnostics
-		null_ls.builtins.diagnostics.solhint,
-	},
-	on_attach = function(client, bufnr)
-		if client.supports_method("textDocument/formatting") then
-			vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-			vim.api.nvim_create_autocmd("BufWritePre", {
-				group = augroup,
-				buffer = bufnr,
-				callback = function()
-					vim.lsp.buf.format({
-						async = false,
-						timeout_ms = 500,
-						filter = function(format_client)
-							local preferred_formatter = formatters[vim.bo.filetype]
-							if preferred_formatter then
-								return format_client.name == preferred_formatter
-							else
-								return true -- Fallback to any available formatter
-							end
-						end,
-					})
-				end,
-			})
-		end
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+	callback = function()
+		require("lint").try_lint()
 	end,
 })
 
