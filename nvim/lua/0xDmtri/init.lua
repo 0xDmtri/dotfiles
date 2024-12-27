@@ -82,7 +82,6 @@ require("lazy").setup({
 				lazy = false,
 				dependencies = {
 					"nvim-lua/plenary.nvim",
-					"nvimdev/lspsaga.nvim",
 				},
 				ft = { "rust" },
 			},
@@ -111,7 +110,7 @@ require("lazy").setup({
 
 			-- LSP Enhance Plugin
 			{
-				"nvimdev/lspsaga.nvim",
+				"0xDmtri/lspsaga.nvim", -- tmp until my change is merged
 				name = "lspsaga",
 				event = "LspAttach",
 				dependencies = {

@@ -45,7 +45,7 @@ vim.o.smartcase = true
 vim.wo.signcolumn = "yes"
 
 -- Decrease update time
-vim.o.updatetime = 250
+vim.o.updatetime = 150
 vim.o.timeout = true
 vim.o.timeoutlen = 300
 
@@ -55,8 +55,10 @@ vim.o.completeopt = "menuone,noselect"
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
--- Sort diagnostic messages by severity
+-- Disable neovim builtin diagnostic virtual text
+-- and enable serverity sort
 vim.diagnostic.config({
+	virtual_text = false,
 	severity_sort = true,
 })
 
