@@ -1,5 +1,5 @@
 -- Pull in the wezterm API
-local wezterm = require('wezterm')
+local wezterm = require("wezterm")
 
 -- This table will hold the configuration.
 local config = {}
@@ -18,11 +18,14 @@ config.window_padding = {
 	bottom = 0,
 }
 
+-- Do not resize window when changing font size
+config.adjust_window_size_when_changing_font_size = false
+
 -- Move tab bar to the bottom
 config.tab_bar_at_bottom = true
 
 -- Set Hack Nerd Font at main font
-config.font = wezterm.font 'Hack Nerd Font'
+config.font = wezterm.font("Hack Nerd Font Mono")
 
 -- Set default font size
 config.font_size = 11
@@ -34,7 +37,7 @@ config.use_dead_keys = false
 config.window_background_opacity = 0.8
 
 -- For example, changing the color scheme:
-config.color_scheme = 'rose-pine'
+config.color_scheme = "rose-pine"
 
 -- and finally, return the configuration to wezterm
 return config
