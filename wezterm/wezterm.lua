@@ -24,6 +24,10 @@ config.adjust_window_size_when_changing_font_size = false
 -- Move tab bar to the bottom
 config.tab_bar_at_bottom = true
 
+-- Increate max fps
+config.max_fps = 120
+config.animation_fps = 120
+
 -- Set Hack Nerd Font at main font
 config.font = wezterm.font("Hack Nerd Font Mono")
 
