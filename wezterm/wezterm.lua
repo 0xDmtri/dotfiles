@@ -29,7 +29,7 @@ config.max_fps = 120
 config.animation_fps = 120
 
 -- Set Hack Nerd Font at main font
-config.font = wezterm.font("Hack Nerd Font Mono")
+config.font = wezterm.font("Hack Nerd Font")
 
 -- Set default font size
 config.font_size = 11
