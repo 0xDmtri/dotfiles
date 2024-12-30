@@ -36,7 +36,7 @@ local lsp_attach = function(client, bufnr)
 	nmap(bufnr, "<leader>q", "<cmd>Lspsaga show_buf_diagnostics<CR>", "Open diagnostic list")
 
 	-- Rust Specific keymaps
-	if client.name == "rust_analyzer" then
+	if client.name == "rust-analyzer" then
 		nmap(bufnr, "<leader>a", "<cmd>RustLsp hover actions<CR>", "[A]ctions Hover")
 		nmap(bufnr, "<leader>ca", "<cmd>RustLsp codeAction<CR>", "[C]ode [A]ction")
 		nmap(bufnr, "<leader>cr", "<cmd>RustLsp runnables<CR>", "[C]argo [R]unnables")
@@ -70,7 +70,7 @@ require("mason-lspconfig").setup({
 	handlers = {
 		function(server_name)
 			-- Do not configure rust_analyzer as it will be configure via Rustaceanvim below
-			if server_name ~= "rust_analyzer" then
+			if server_name ~= "rust-analyzer" then
 				require("lspconfig")[server_name].setup({
 					on_attach = lsp_attach, -- Use your custom on_attach function
 					capabilities = capabilities, -- Pass extended capabilities
@@ -99,7 +99,7 @@ require("mason-lspconfig").setup({
 	},
 })
 
--- Initialize rust_analyzer with rustaceanvim
+-- Initialize rust-analyzer with rustaceanvim
 vim.g.rustaceanvim = {
 	-- LSP configuration
 	tools = {
@@ -226,7 +226,6 @@ cmp.setup({
 		{ name = "luasnip" },
 		{ name = "crates" },
 		{ name = "path" },
-		{ name = "buffer" },
 	}),
 })
 
