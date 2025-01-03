@@ -14,8 +14,8 @@ end
 config.window_padding = {
 	left = 5,
 	right = 5,
-	top = 1,
-	bottom = 1,
+	top = 0,
+	bottom = 0,
 }
 
 -- Do not resize window when changing font size
