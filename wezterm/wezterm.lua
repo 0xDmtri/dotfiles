@@ -13,7 +13,7 @@ end
 -- Window padding
 config.window_padding = {
 	left = 5,
-	right = 0,
+	right = 5,
 	top = 5,
 	bottom = 0,
 }
