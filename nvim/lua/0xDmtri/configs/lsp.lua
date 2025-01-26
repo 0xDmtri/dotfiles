@@ -66,6 +66,7 @@ require("mason-lspconfig").setup({
 		"ts_ls",
 		"solidity_ls_nomicfoundation",
 		"pyright",
+		"ruff",
 	},
 	handlers = {
 		function(server_name)
@@ -92,6 +93,22 @@ require("mason-lspconfig").setup({
 							checkThirdParty = false, -- Avoid prompts about third-party libraries
 						},
 						telemetry = { enable = false }, -- Disable telemetry for privacy
+					},
+				},
+			})
+		end,
+		["pyright"] = function()
+			require("lspconfig").pyright.setup({
+				on_attach = lsp_attach,
+				capabilities = capabilities,
+				settings = {
+					pyright = {
+						disableOrganizeImports = true, -- Using Ruff
+					},
+					python = {
+						analysis = {
+							ignore = { "*" }, -- Using Ruff
+						},
 					},
 				},
 			})
@@ -145,7 +162,7 @@ require("conform").setup({
 	formatters_by_ft = {
 		-- Set specific formatters per language
 		lua = { "stylua" },
-		python = { "isort", "black" },
+		python = { "ruff_format", "ruff_organize_imports" },
 		javascript = { "prettier" },
 		typescript = { "prettier" },
 		solidity = { "forge_fmt" },
