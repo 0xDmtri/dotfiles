@@ -232,6 +232,20 @@ require("lazy").setup({
 		end,
 	},
 
+	-- Python env selector
+	{
+		"linux-cultist/venv-selector.nvim",
+		branch = "regexp",
+		lazy = false,
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-telescope/telescope.nvim",
+		},
+		config = function()
+			require("0xDmtri.configs.venv")
+		end,
+	},
+
 	-- Auto matching brackers
 	{
 		"windwp/nvim-autopairs",
