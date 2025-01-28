@@ -82,19 +82,15 @@ require("lazy").setup({
 				lazy = false,
 				dependencies = {
 					"nvim-lua/plenary.nvim",
-					"nvimdev/lspsaga.nvim",
 				},
 				ft = { "rust" },
 			},
 
-			-- LSP extention for formatting and linting
-			{
-				"nvimtools/none-ls.nvim",
-				dependencies = {
-					"nvim-lua/plenary.nvim",
-					"nvimtools/none-ls-extras.nvim",
-				},
-			},
+			-- LSP extention for formatting
+			{ "stevearc/conform.nvim" },
+
+			-- LSP extention for linting
+			{ "mfussenegger/nvim-lint" },
 
 			-- Autocompletion
 			{
@@ -114,7 +110,7 @@ require("lazy").setup({
 
 			-- LSP Enhance Plugin
 			{
-				"nvimdev/lspsaga.nvim",
+				"0xDmtri/lspsaga.nvim", -- tmp until my change is merged
 				name = "lspsaga",
 				event = "LspAttach",
 				dependencies = {
@@ -233,6 +229,20 @@ require("lazy").setup({
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
 			require("0xDmtri.configs.crates")
+		end,
+	},
+
+	-- Python env selector
+	{
+		"linux-cultist/venv-selector.nvim",
+		branch = "regexp",
+		lazy = false,
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-telescope/telescope.nvim",
+		},
+		config = function()
+			require("0xDmtri.configs.venv")
 		end,
 	},
 

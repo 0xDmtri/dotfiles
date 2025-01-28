@@ -36,7 +36,7 @@ local lsp_attach = function(client, bufnr)
 	nmap(bufnr, "<leader>q", "<cmd>Lspsaga show_buf_diagnostics<CR>", "Open diagnostic list")
 
 	-- Rust Specific keymaps
-	if client.name == "rust_analyzer" then
+	if client.name == "rust-analyzer" then
 		nmap(bufnr, "<leader>a", "<cmd>RustLsp hover actions<CR>", "[A]ctions Hover")
 		nmap(bufnr, "<leader>ca", "<cmd>RustLsp codeAction<CR>", "[C]ode [A]ction")
 		nmap(bufnr, "<leader>cr", "<cmd>RustLsp runnables<CR>", "[C]argo [R]unnables")
@@ -66,11 +66,12 @@ require("mason-lspconfig").setup({
 		"ts_ls",
 		"solidity_ls_nomicfoundation",
 		"pyright",
+		"ruff",
 	},
 	handlers = {
 		function(server_name)
 			-- Do not configure rust_analyzer as it will be configure via Rustaceanvim below
-			if server_name ~= "rust_analyzer" then
+			if server_name ~= "rust-analyzer" then
 				require("lspconfig")[server_name].setup({
 					on_attach = lsp_attach, -- Use your custom on_attach function
 					capabilities = capabilities, -- Pass extended capabilities
@@ -96,10 +97,26 @@ require("mason-lspconfig").setup({
 				},
 			})
 		end,
+		["pyright"] = function()
+			require("lspconfig").pyright.setup({
+				on_attach = lsp_attach,
+				capabilities = capabilities,
+				settings = {
+					pyright = {
+						disableOrganizeImports = true, -- Using Ruff
+					},
+					python = {
+						analysis = {
+							ignore = { "*" }, -- Using Ruff
+						},
+					},
+				},
+			})
+		end,
 	},
 })
 
--- Initialize rust_analyzer with rustaceanvim
+-- Initialize rust-analyzer with rustaceanvim
 vim.g.rustaceanvim = {
 	-- LSP configuration
 	tools = {
@@ -140,55 +157,40 @@ vim.g.rustaceanvim = {
 	},
 }
 
--- Define preferred formatters for each filetype
-local formatters = {
-	-- Langs that will use null-ls for formatting
-	["javascript"] = "null-ls",
-	["typescript"] = "null-ls",
-	["python"] = "null-ls",
-	["solidity"] = "null-ls",
-	["lua"] = "null-ls",
-	-- Langs that will use non-lsp formatters
-	["rust"] = "rust_analyzer",
+-- Setup Conform formatter
+require("conform").setup({
+	formatters_by_ft = {
+		-- Set specific formatters per language
+		lua = { "stylua" },
+		python = { "ruff_format", "ruff_organize_imports" },
+		javascript = { "prettier" },
+		typescript = { "prettier" },
+		solidity = { "forge_fmt" },
+
+		-- Use LSP formatting if no specific formatters configured
+		default_format_opts = {
+			lsp_format = "fallback",
+		},
+
+		-- Trim whitespace if no other formatters configured,
+		-- and no LSP formatters found
+		["_"] = { "trim_whitespace" },
+	},
+	format_on_save = {
+		lsp_format = "fallback",
+		timeout_ms = 500,
+	},
+})
+
+-- Setup nvim-lint
+require("lint").linters_by_ft = {
+	markdown = { "vale" },
+	solidity = { "solhint" },
 }
 
--- Setup null-ls
-local null_ls = require("null-ls")
-local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
-
-null_ls.setup({
-	sources = {
-		-- Formattings
-		null_ls.builtins.formatting.forge_fmt,
-		null_ls.builtins.formatting.prettier,
-		null_ls.builtins.formatting.stylua,
-		null_ls.builtins.formatting.black,
-
-		-- Diagnostics
-		null_ls.builtins.diagnostics.solhint,
-	},
-	on_attach = function(client, bufnr)
-		if client.supports_method("textDocument/formatting") then
-			vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-			vim.api.nvim_create_autocmd("BufWritePre", {
-				group = augroup,
-				buffer = bufnr,
-				callback = function()
-					vim.lsp.buf.format({
-						async = false,
-						timeout_ms = 500,
-						filter = function(format_client)
-							local preferred_formatter = formatters[vim.bo.filetype]
-							if preferred_formatter then
-								return format_client.name == preferred_formatter
-							else
-								return true -- Fallback to any available formatter
-							end
-						end,
-					})
-				end,
-			})
-		end
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+	callback = function()
+		require("lint").try_lint()
 	end,
 })
 
@@ -241,7 +243,6 @@ cmp.setup({
 		{ name = "luasnip" },
 		{ name = "crates" },
 		{ name = "path" },
-		{ name = "buffer" },
 	}),
 })
 
