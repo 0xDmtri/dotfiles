@@ -102,6 +102,7 @@ require("lazy").setup({
 					"hrsh7th/cmp-path", -- Path source for nvim-cmp
 					"L3MON4D3/LuaSnip", -- Snippet engine
 					"saadparwaiz1/cmp_luasnip", -- Snippet source for nvim-cmp
+					"onsails/lspkind.nvim", -- Better completion UI
 				},
 			},
 
