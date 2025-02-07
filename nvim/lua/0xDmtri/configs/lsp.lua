@@ -204,7 +204,7 @@ cmp.setup({
 		fields = { "abbr", "kind", "menu" },
 		format = lspkind.cmp_format({
 			mode = "symbol",
-			maxwidth = 50,
+			maxwidth = 70,
 			ellipsis_char = "...",
 			-- show_labelDetails = true,
 		}),
