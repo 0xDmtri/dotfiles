@@ -197,8 +197,18 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 -- Setup nvim-cmp
 local cmp = require("cmp")
 local luasnip = require("luasnip")
+local lspkind = require("lspkind")
 
 cmp.setup({
+	formatting = {
+		fields = { "abbr", "kind", "menu" },
+		format = lspkind.cmp_format({
+			mode = "symbol",
+			maxwidth = 70,
+			ellipsis_char = "...",
+			-- show_labelDetails = true,
+		}),
+	},
 	snippet = {
 		expand = function(args)
 			luasnip.lsp_expand(args.body)
