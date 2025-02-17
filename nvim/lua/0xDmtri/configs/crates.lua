@@ -11,6 +11,17 @@ vim.keymap.set("n", "<leader>ca", crates.update_all_crates, { desc = "[C]rates u
 vim.keymap.set("n", "<leader>cd", crates.open_documentation, { desc = "[C]rate [D]ocs" })
 
 require("crates").setup({
+	completion = {
+		crates = {
+			enabled = true,
+		},
+	},
+	lsp = {
+		enabled = true,
+		actions = true,
+		completion = true,
+		hover = true,
+	},
 	popup = {
 		autofocus = true,
 		hide_on_select = false,

@@ -123,6 +123,7 @@ vim.g.rustaceanvim = {
 		hover_actions = {
 			auto_focus = true,
 		},
+		enable_clippy = true,
 	},
 	server = {
 		capabilities = capabilities,
@@ -204,7 +205,7 @@ cmp.setup({
 		fields = { "abbr", "kind", "menu" },
 		format = lspkind.cmp_format({
 			mode = "symbol",
-			maxwidth = 70,
+			maxwidth = 75,
 			ellipsis_char = "...",
 			-- show_labelDetails = true,
 		}),
