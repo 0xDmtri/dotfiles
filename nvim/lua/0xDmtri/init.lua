@@ -111,7 +111,7 @@ require("lazy").setup({
 
 			-- LSP Enhance Plugin
 			{
-				"0xDmtri/lspsaga.nvim", -- tmp until my change is merged
+				"nvimdev/lspsaga.nvim",
 				name = "lspsaga",
 				event = "LspAttach",
 				dependencies = {
