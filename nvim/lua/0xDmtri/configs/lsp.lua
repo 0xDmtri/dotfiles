@@ -56,7 +56,7 @@ local lsp_attach = function(client, bufnr)
 end
 
 -- Get default capabilities for autocompletion
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
+local capabilities = require("blink.cmp").get_lsp_capabilities()
 
 -- Setup Mason and Mason-LspConfig
 require("mason").setup({})
@@ -135,23 +135,44 @@ vim.g.rustaceanvim = {
 			["rust-analyzer"] = {
 				checkOnSave = {
 					command = "clippy",
-					extraArgs = { "--all", "--", "-W", "clippy::all" },
+					extraArgs = { "--all", "--no-deps", "--", "-W", "clippy::all" },
 					allFeatures = true,
 				},
 				cargo = {
-					features = "all",
+					allFeatures = true, -- Enable all features for Cargo
+					loadOutDirsFromCheck = true, -- Load output directories from check
+					runBuildScripts = true, -- Run build scripts
 				},
 				procMacro = {
-					enable = true,
+					enable = true, -- Enable procedural macro support
+				},
+				completion = {
+					autoimport = {
+						enable = true, -- Automatically insert missing imports on completion
+					},
+					postfix = {
+						enable = true, -- Enable postfix completions like .into()
+					},
 				},
 				imports = {
 					granularity = {
 						group = "crate", -- Group imports by crate
 					},
 					prefix = "self", -- Use plain paths for imports
+					merge = {
+						glob = true, -- Merge glob imports (e.g., use foo::{bar, baz})
+					},
 				},
 				rustfmt = {
 					extraArgs = { "+nightly" },
+				},
+				semanticHighlighting = {
+					strings = {
+						enable = true, -- Better highlighting for strings
+					},
+				},
+				lens = {
+					enable = true,
 				},
 			},
 		},
@@ -195,82 +216,41 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 	end,
 })
 
--- Setup nvim-cmp
-local cmp = require("cmp")
-local luasnip = require("luasnip")
-local lspkind = require("lspkind")
+-- Setup blink.cmp
+local blink = require("blink.cmp")
 
-cmp.setup({
-	formatting = {
-		fields = { "abbr", "kind", "menu" },
-		format = lspkind.cmp_format({
-			mode = "symbol",
-			maxwidth = 90,
-			ellipsis_char = "...",
-			-- show_labelDetails = true,
-		}),
-	},
-	snippet = {
-		expand = function(args)
-			luasnip.lsp_expand(args.body)
-		end,
-	},
-	window = {
-		completion = cmp.config.window.bordered(),
-		documentation = cmp.config.window.bordered(),
-	},
-	mapping = cmp.mapping.preset.insert({
-		["<C-j>"] = cmp.mapping.select_next_item(),
-		["<C-k>"] = cmp.mapping.select_prev_item(),
-		["<C-b>"] = cmp.mapping.scroll_docs(-4),
-		["<C-f>"] = cmp.mapping.scroll_docs(4),
-		["<C-Space>"] = cmp.mapping.complete({}),
-		["<C-x>"] = cmp.mapping.abort(),
-		["<CR>"] = cmp.mapping.confirm({
-			behavior = cmp.ConfirmBehavior.Replace,
-			select = true,
-		}),
-		["<Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.select_next_item()
-			elseif luasnip.expand_or_jumpable() then
-				luasnip.expand_or_jump()
-			else
-				fallback()
-			end
-		end, { "i", "s" }),
-		["<S-Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.select_prev_item()
-			elseif luasnip.jumpable(-1) then
-				luasnip.jump(-1)
-			else
-				fallback()
-			end
-		end, { "i", "s" }),
-	}),
-	sources = cmp.config.sources({
-		{ name = "nvim_lsp" },
-		{ name = "luasnip" },
-		{ name = "crates" },
-		{ name = "path" },
-	}),
-})
+blink.setup({
+	keymap = {
+		-- do NOT set any preset keymaps
+		preset = "none",
 
-cmp.setup.cmdline({ "/", "?" }, {
-	mapping = cmp.mapping.preset.cmdline(),
-	sources = {
-		{ name = "buffer" },
+		-- set own custom keymaps
+		["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
+		["<C-x>"] = { "hide", "fallback" },
+		["<CR>"] = { "accept", "fallback" },
+
+		["<Tab>"] = { "snippet_forward", "fallback" },
+		["<S-Tab>"] = { "snippet_backward", "fallback" },
+
+		["<Up>"] = { "select_prev", "fallback" },
+		["<Down>"] = { "select_next", "fallback" },
+		["<C-k>"] = { "select_prev", "fallback_to_mappings" },
+		["<C-j>"] = { "select_next", "fallback_to_mappings" },
+
+		["<C-b>"] = { "scroll_documentation_up", "fallback" },
+		["<C-f>"] = { "scroll_documentation_down", "fallback" },
+
+		-- use LSP native signature help until this is stable
+		-- ["<C-s>"] = { "show_signature", "hide_signature", "fallback" },
+	},
+
+	-- use LSP native signature help until this is stable
+	signature = {
+		enabled = false,
+	},
+
+	cmdline = {
+		-- inherit mappings from top level `keymap` config
+		keymap = { preset = "inherit" },
 	},
 })
-
-cmp.setup.cmdline(":", {
-	mapping = cmp.mapping.preset.cmdline(),
-	sources = cmp.config.sources({
-		{ name = "path" },
-		{ name = "cmdline" },
-	}),
-})
-
--- Load VSCode-style snippets
-require("luasnip.loaders.from_vscode").lazy_load()

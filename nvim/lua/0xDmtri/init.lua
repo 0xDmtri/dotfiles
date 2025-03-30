@@ -83,7 +83,6 @@ require("lazy").setup({
 				dependencies = {
 					"nvim-lua/plenary.nvim",
 				},
-				ft = { "rust" },
 			},
 
 			-- LSP extention for formatting
@@ -94,20 +93,12 @@ require("lazy").setup({
 
 			-- Autocompletion
 			{
-				"hrsh7th/nvim-cmp",
-				event = "InsertEnter",
-				dependencies = {
-					"hrsh7th/cmp-nvim-lsp", -- LSP source for nvim-cmp
-					"hrsh7th/cmp-buffer", -- Buffer source for nvim-cmp
-					"hrsh7th/cmp-path", -- Path source for nvim-cmp
-					"L3MON4D3/LuaSnip", -- Snippet engine
-					"saadparwaiz1/cmp_luasnip", -- Snippet source for nvim-cmp
-					"onsails/lspkind.nvim", -- Better completion UI
-				},
+				"saghen/blink.cmp",
+				-- VSCode style snippets
+				dependencies = { "rafamadriz/friendly-snippets" },
+				version = "1.*",
+				opts_extend = { "sources.default" },
 			},
-
-			-- VSCode style snippets
-			{ "rafamadriz/friendly-snippets" },
 
 			-- LSP Enhance Plugin
 			{
