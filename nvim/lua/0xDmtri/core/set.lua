@@ -14,6 +14,15 @@ vim.opt.wrap = false
 -- Set highlight on search
 vim.o.hlsearch = false
 
+-- Enable automatic indentation
+vim.o.autoindent = true
+
+-- Enable syntax-aware indentation
+vim.o.smartindent = true
+
+-- Convert tabs to spaces
+vim.o.expandtab = true
+
 -- Make relative numbers
 vim.wo.relativenumber = true
 
@@ -58,8 +67,8 @@ vim.o.termguicolors = true
 -- Disable neovim builtin diagnostic virtual text
 -- and enable serverity sort
 vim.diagnostic.config({
-	virtual_text = false,
-	severity_sort = true,
+    virtual_text = false,
+    severity_sort = true,
 })
 
 -- Python Neovim plugin
@@ -69,9 +78,9 @@ vim.g.python3_host_prog = "/Users/dmtri/.pyenv/versions/nvim/bin/python"
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {
-	callback = function()
-		vim.highlight.on_yank()
-	end,
-	group = highlight_group,
-	pattern = "*",
+    callback = function()
+        vim.highlight.on_yank()
+    end,
+    group = highlight_group,
+    pattern = "*",
 })
