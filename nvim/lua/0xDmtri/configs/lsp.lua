@@ -239,4 +239,9 @@ blink.setup({
         -- inherit mappings from top level `keymap` config
         keymap = { preset = "inherit" },
     },
+
+    completion = {
+        menu = { border = "rounded" },
+        documentation = { window = { border = "rounded" } },
+    },
 })
