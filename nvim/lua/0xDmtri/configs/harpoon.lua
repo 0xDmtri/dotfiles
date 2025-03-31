@@ -14,7 +14,6 @@ local harpoon_mappings = {
             harpoon:list():add()
         end,
         desc = "Add buffer",
-        mode = "n",
     },
     {
         "<leader>hm",
@@ -22,7 +21,6 @@ local harpoon_mappings = {
             harpoon.ui:toggle_quick_menu(harpoon:list())
         end,
         desc = "Menu",
-        mode = "n",
     },
 }
 
@@ -34,7 +32,6 @@ for i = 1, 4 do
             harpoon:list():select(i)
         end,
         desc = "File [" .. i .. "]",
-        mode = "n",
     })
 end
 
@@ -45,7 +42,6 @@ table.insert(harpoon_mappings, {
         harpoon:list():next({ ui_nav_wrap = true })
     end,
     desc = "which_key_ignore",
-    mode = "n",
 })
 
 -- Register all mappings with Which-Key
