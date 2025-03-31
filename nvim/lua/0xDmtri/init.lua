@@ -218,7 +218,7 @@ require("lazy").setup({
             "nvim-telescope/telescope.nvim",
         },
         config = function()
-            require("0xDmtri.configs.venv")
+            require("venv-selector").setup({})
         end,
     },
 

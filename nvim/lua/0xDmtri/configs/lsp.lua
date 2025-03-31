@@ -14,19 +14,22 @@ end
 
 -- LSP settings on attach
 local lsp_attach = function(client, bufnr)
-    -- LSP general keymaps
+    -- GOTO mappings
     nmap(bufnr, "gr", "<cmd>Lspsaga finder ref<CR>", "Goto References")
     nmap(bufnr, "gd", vim.lsp.buf.declaration, "Goto Declaration")
     nmap(bufnr, "gD", "<cmd>Lspsaga finder def<CR>", "Goto Definition")
-    nmap(bufnr, "gI", "<cmd>Lspsaga finder imp<CR>", "Goto Implementation")
+    nmap(bufnr, "gi", "<cmd>Lspsaga finder imp<CR>", "Goto Implementation")
 
-    nmap(bufnr, "<leader>la", "<cmd>Lspsaga code_action<CR>", "Code Action")
+    -- Frequently used mappings
+    nmap(bufnr, "<leader>a", "<cmd>Lspsaga code_action<CR>", "Code Action")
     nmap(bufnr, "<leader>n", "<cmd>Lspsaga rename<CR>", "Rename")
     nmap(bufnr, "<leader>d", "<cmd>Lspsaga finder tyd<CR>", "Type Definition")
     nmap(bufnr, "<leader>o", "<cmd>Lspsaga outline<CR>", "Outline")
-
-    nmap(bufnr, "<leader>ss", require("telescope.builtin").lsp_document_symbols, "Document Symbols")
     nmap(bufnr, "K", "<cmd>Lspsaga hover_doc<CR>", "Hover Documentation")
+
+    -- LSP x Telescope
+    nmap(bufnr, "<leader>ss", require("telescope.builtin").lsp_document_symbols, "Symbols")
+    nmap(bufnr, "<leader>sd", require("telescope.builtin").diagnostics, "Diagnostics")
 
     -- in INSERT mode only
     vim.keymap.set("i", "<C-s>", vim.lsp.buf.signature_help, { desc = "Signature Help" })
@@ -181,17 +184,11 @@ require("conform").setup({
         typescript = { "prettier" },
         solidity = { "forge_fmt" },
 
-        -- Use LSP formatting if no specific formatters configured
-        default_format_opts = {
-            lsp_format = "fallback",
-        },
-
-        -- Trim whitespace if no other formatters configured,
-        -- and no LSP formatters found
-        ["_"] = { "trim_whitespace" },
+        -- Use LSP formatting if no specific formatters configured,
+        -- trim whitespace if no LSP formatters found
+        ["_"] = { "trim_whitespace", lsp_format = "prefer" },
     },
     format_on_save = {
-        lsp_format = "fallback",
         timeout_ms = 500,
     },
 })
@@ -231,9 +228,6 @@ blink.setup({
 
         ["<C-b>"] = { "scroll_documentation_up", "fallback" },
         ["<C-f>"] = { "scroll_documentation_down", "fallback" },
-
-        -- use LSP native signature help until this is stable
-        -- ["<C-s>"] = { "show_signature", "hide_signature", "fallback" },
     },
 
     -- use LSP native signature help until this is stable
