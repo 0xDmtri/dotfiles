@@ -195,7 +195,6 @@ require("conform").setup({
 
 -- Setup nvim-lint
 require("lint").linters_by_ft = {
-    markdown = { "vale" },
     solidity = { "solhint" },
 }
 
