@@ -127,15 +127,15 @@ require("lazy").setup({
     },
 
     {
-        "rose-pine/neovim",
-        name = "rose-pine",
-        priority = 1000,
+        "ellisonleao/gruvbox.nvim",
+        name = "gruvbox",
         opts = function()
-            return require("0xDmtri.configs.others").rose_pine
+            return require("0xDmtri.configs.others").gruvbox
         end,
         config = function(_, opts)
-            require("rose-pine").setup(opts)
-            vim.cmd.colorscheme("rose-pine")
+            require("gruvbox").setup(opts)
+            vim.o.background = "dark"
+            vim.cmd.colorscheme("gruvbox")
         end,
     },
 
