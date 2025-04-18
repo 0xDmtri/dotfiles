@@ -14,6 +14,9 @@ require("lspsaga").setup({
     ui = {
         border = "rounded",
     },
+    lightbulb = {
+        enable = false,
+    },
 })
 
 -- Floating terminal
