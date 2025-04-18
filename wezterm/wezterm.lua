@@ -41,7 +41,7 @@ config.use_dead_keys = false
 config.window_background_opacity = 0.8
 
 -- For example, changing the color scheme:
-config.color_scheme = "rose-pine"
+config.color_scheme = "Gruvbox dark, hard (base16)"
 
 -- and finally, return the configuration to wezterm
 return config
