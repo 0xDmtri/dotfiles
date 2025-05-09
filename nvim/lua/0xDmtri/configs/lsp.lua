@@ -63,51 +63,40 @@ require("mason-lspconfig").setup({
         "pyright",
         "ruff",
     },
-    handlers = {
-        function(server_name)
-            -- Do not configure rust_analyzer as it will be configure via Rustaceanvim below
-            if server_name ~= "rust-analyzer" then
-                require("lspconfig")[server_name].setup({
-                    on_attach = lsp_attach, -- Use your custom on_attach function
-                    capabilities = capabilities, -- Pass extended capabilities
-                })
-            end
-        end,
-        ["lua_ls"] = function()
-            require("lspconfig").lua_ls.setup({
-                on_attach = lsp_attach,
-                capabilities = capabilities,
-                settings = {
-                    Lua = {
-                        diagnostics = {
-                            globals = { "vim" }, -- Avoid warnings for 'vim'
-                            disable = { "missing-fields" }, -- Disable specific warnings
-                        },
-                        workspace = {
-                            library = vim.api.nvim_get_runtime_file("", true), -- Make the server aware of Neovim runtime files
-                            checkThirdParty = false, -- Avoid prompts about third-party libraries
-                        },
-                        telemetry = { enable = false }, -- Disable telemetry for privacy
-                    },
-                },
-            })
-        end,
-        ["pyright"] = function()
-            require("lspconfig").pyright.setup({
-                on_attach = lsp_attach,
-                capabilities = capabilities,
-                settings = {
-                    pyright = {
-                        disableOrganizeImports = true, -- Using Ruff
-                    },
-                    python = {
-                        analysis = {
-                            ignore = { "*" }, -- Using Ruff
-                        },
-                    },
-                },
-            })
-        end,
+})
+
+-- Configure lua lsp
+vim.lsp.config("lua_ls", {
+    on_attach = lsp_attach,
+    capabilities = capabilities,
+    settings = {
+        Lua = {
+            diagnostics = {
+                globals = { "vim" }, -- Avoid warnings for 'vim'
+                disable = { "missing-fields" }, -- Disable specific warnings
+            },
+            workspace = {
+                library = vim.api.nvim_get_runtime_file("", true), -- Make the server aware of Neovim runtime files
+                checkThirdParty = false, -- Avoid prompts about third-party libraries
+            },
+            telemetry = { enable = false }, -- Disable telemetry for privacy
+        },
+    },
+})
+
+-- Configure pyright
+vim.lsp.config("pyright", {
+    on_attach = lsp_attach,
+    capabilities = capabilities,
+    settings = {
+        pyright = {
+            disableOrganizeImports = true, -- Using Ruff
+        },
+        python = {
+            analysis = {
+                ignore = { "*" }, -- Using Ruff
+            },
+        },
     },
 })
 
@@ -197,7 +186,6 @@ require("conform").setup({
 require("lint").linters_by_ft = {
     solidity = { "solhint" },
 }
-
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
     callback = function()
         require("lint").try_lint()
@@ -206,7 +194,6 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 
 -- Setup blink.cmp
 local blink = require("blink.cmp")
-
 blink.setup({
     keymap = {
         -- do NOT set any preset keymaps

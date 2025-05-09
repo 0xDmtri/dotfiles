@@ -62,7 +62,7 @@ require("lazy").setup({
             -- Rust dev env
             {
                 "mrcjkb/rustaceanvim",
-                version = "^5",
+                version = "^6",
                 lazy = false,
                 dependencies = {
                     "nvim-lua/plenary.nvim",
