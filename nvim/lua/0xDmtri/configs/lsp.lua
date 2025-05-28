@@ -15,10 +15,10 @@ end
 -- LSP settings on attach
 local lsp_attach = function(client, bufnr)
     -- GOTO mappings
-    nmap(bufnr, "gr", "<cmd>Lspsaga finder ref<CR>", "Goto References")
-    nmap(bufnr, "gd", vim.lsp.buf.declaration, "Goto Declaration")
-    nmap(bufnr, "gD", "<cmd>Lspsaga finder def<CR>", "Goto Definition")
-    nmap(bufnr, "gi", "<cmd>Lspsaga finder imp<CR>", "Goto Implementation")
+    nmap(bufnr, "gr", "<cmd>Lspsaga finder ref<CR>", "References")
+    nmap(bufnr, "gd", vim.lsp.buf.declaration, "Declaration")
+    nmap(bufnr, "gD", "<cmd>Lspsaga finder def<CR>", "Definition")
+    nmap(bufnr, "gi", "<cmd>Lspsaga finder imp<CR>", "Implementation")
 
     -- Frequently used mappings
     nmap(bufnr, "<leader>a", "<cmd>Lspsaga code_action<CR>", "Code Action")
@@ -32,20 +32,19 @@ local lsp_attach = function(client, bufnr)
     nmap(bufnr, "<leader>sd", require("telescope.builtin").diagnostics, "Diagnostics")
 
     -- in INSERT mode only
-    vim.keymap.set("i", "<C-s>", vim.lsp.buf.signature_help, { desc = "Signature Help" })
+    vim.keymap.set("i", "<C-s>", vim.lsp.buf.signature_help, { buffer = bufnr, desc = "Signature Help" })
 
     -- Diagnostic keymaps
     nmap(bufnr, "<leader>D", "<cmd>Lspsaga show_cursor_diagnostics<CR>", "Diagnostics")
-    nmap(bufnr, "[d", "<cmd>Lspsaga diagnostic_jump_prev<CR>", "Go to prev diagnostic msg")
-    nmap(bufnr, "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>", "Go to next diagnostic msg")
+    nmap(bufnr, "[d", "<cmd>Lspsaga diagnostic_jump_prev<CR>", "Prev diagnostic msg")
+    nmap(bufnr, "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>", "Next diagnostic msg")
     nmap(bufnr, "<leader>q", "<cmd>Lspsaga show_buf_diagnostics<CR>", "Open diagnostic list")
 
     -- if available, toggle inlay-hints
-    local toggle_inlay = function()
-        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(), { buffer = bufnr })
-    end
-
     if client.server_capabilities.inlayHintProvider then
+        local toggle_inlay = function()
+            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(), { buffer = bufnr })
+        end
         vim.keymap.set({ "n", "i", "v" }, "<M-h>", toggle_inlay, { buffer = bufnr })
     end
 end
@@ -65,42 +64,7 @@ require("mason-lspconfig").setup({
     },
 })
 
--- Configure lua lsp
-vim.lsp.config("lua_ls", {
-    on_attach = lsp_attach,
-    capabilities = capabilities,
-    settings = {
-        Lua = {
-            diagnostics = {
-                globals = { "vim" }, -- Avoid warnings for 'vim'
-                disable = { "missing-fields" }, -- Disable specific warnings
-            },
-            workspace = {
-                library = vim.api.nvim_get_runtime_file("", true), -- Make the server aware of Neovim runtime files
-                checkThirdParty = false, -- Avoid prompts about third-party libraries
-            },
-            telemetry = { enable = false }, -- Disable telemetry for privacy
-        },
-    },
-})
-
--- Configure pyright
-vim.lsp.config("pyright", {
-    on_attach = lsp_attach,
-    capabilities = capabilities,
-    settings = {
-        pyright = {
-            disableOrganizeImports = true, -- Using Ruff
-        },
-        python = {
-            analysis = {
-                ignore = { "*" }, -- Using Ruff
-            },
-        },
-    },
-})
-
--- Initialize rust-analyzer with rustaceanvim
+-- Configure rust-analyzer with Rustaceanvim
 vim.g.rustaceanvim = {
     -- LSP configuration
     tools = {
@@ -111,10 +75,10 @@ vim.g.rustaceanvim = {
     },
     server = {
         capabilities = capabilities,
+        on_attach = lsp_attach,
         standalone = false,
         hover_actions = { auto_focus = true },
         runnables = { use_telescope = true },
-        on_attach = lsp_attach,
         default_settings = {
             ["rust-analyzer"] = {
                 checkOnSave = {
@@ -163,6 +127,59 @@ vim.g.rustaceanvim = {
     },
 }
 
+-- Configure for all lsp
+vim.lsp.config("*", {
+    capabilities = capabilities,
+    on_attach = lsp_attach,
+})
+
+-- Configure lua lsp
+vim.lsp.config("lua_ls", {
+    settings = {
+        Lua = {
+            diagnostics = {
+                globals = { "vim" }, -- Avoid warnings for 'vim'
+                disable = { "missing-fields" }, -- Disable specific warnings
+            },
+            workspace = {
+                library = vim.api.nvim_get_runtime_file("", true), -- Make the server aware of Neovim runtime files
+                checkThirdParty = false, -- Avoid prompts about third-party libraries
+            },
+            telemetry = { enable = false }, -- Disable telemetry for privacy
+        },
+    },
+})
+
+-- Configure pyright
+vim.lsp.config("pyright", {
+    settings = {
+        pyright = {
+            disableOrganizeImports = true, -- Using Ruff
+        },
+        python = {
+            analysis = {
+                ignore = { "*" }, -- Using Ruff
+            },
+        },
+    },
+})
+
+-- Clean up on LspDetach
+vim.api.nvim_create_autocmd("LspDetach", {
+    callback = function(args)
+        -- Get the detaching client
+        local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+
+        -- Remove the autocommand to format the buffer on save, if it exists
+        if client:supports_method("textDocument/formatting") then
+            vim.api.nvim_clear_autocmds({
+                event = "BufWritePre",
+                buffer = args.buf,
+            })
+        end
+    end,
+})
+
 -- Setup Conform formatter
 require("conform").setup({
     formatters_by_ft = {
@@ -186,7 +203,7 @@ require("conform").setup({
 require("lint").linters_by_ft = {
     solidity = { "solhint" },
 }
-vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+vim.api.nvim_create_autocmd("BufWritePost", {
     callback = function()
         require("lint").try_lint()
     end,
