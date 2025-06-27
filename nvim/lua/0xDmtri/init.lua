@@ -272,7 +272,9 @@ require("lazy").setup({
             "nvim-neo-tree/neo-tree.nvim",
         },
         config = function()
-            require("treesitter-context").setup({})
+            require("treesitter-context").setup({
+                max_lines = 5,
+            })
         end,
     },
 
