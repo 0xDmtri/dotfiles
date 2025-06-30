@@ -81,7 +81,8 @@ vim.g.rustaceanvim = {
         runnables = { use_telescope = true },
         default_settings = {
             ["rust-analyzer"] = {
-                checkOnSave = {
+                checkOnSave = true,
+                check = {
                     command = "clippy",
                     extraArgs = { "--all", "--no-deps", "--", "-W", "clippy::all" },
                     allFeatures = true,
