@@ -127,10 +127,9 @@ vim.g.rustaceanvim = {
     },
 }
 
--- Configure for all lsp
+-- Configure capabilities for all lsp
 vim.lsp.config("*", {
     capabilities = capabilities,
-    on_attach = lsp_attach,
 })
 
 -- Configure lua lsp
@@ -162,6 +161,17 @@ vim.lsp.config("pyright", {
             },
         },
     },
+})
+
+-- Apply key-bindings on LspAttach
+vim.api.nvim_create_autocmd("LspAttach", {
+    callback = function(args)
+        -- Get the client
+        local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+
+        -- Attach key-bindings
+        lsp_attach(client, args.buf)
+    end,
 })
 
 -- Clean up on LspDetach

@@ -43,7 +43,8 @@ require("lazy").setup({
 
     -- LSP
     {
-        "neovim/nvim-lspconfig",
+        -- Plugin to add mason lsp into lspconfig
+        "mason-org/mason-lspconfig.nvim",
         dependencies = {
             -- Useful status updates for LSP
             {
@@ -56,8 +57,8 @@ require("lazy").setup({
             -- Plugin to download remote lsp servers
             { "williamboman/mason.nvim", config = true },
 
-            -- Plugin to add mason lsp into lspconfig
-            { "williamboman/mason-lspconfig.nvim" },
+            -- Extention to native LSP
+            { "neovim/nvim-lspconfig" },
 
             -- Rust dev env
             {
@@ -83,24 +84,24 @@ require("lazy").setup({
                 version = "1.*",
                 opts_extend = { "sources.default" },
             },
-
-            -- LSP Enhance Plugin
-            {
-                "nvimdev/lspsaga.nvim",
-                name = "lspsaga",
-                event = "LspAttach",
-                dependencies = {
-                    "nvim-tree/nvim-web-devicons",
-                    "nvim-treesitter/nvim-treesitter",
-                },
-                config = function()
-                    require("0xDmtri.configs.saga")
-                end,
-            },
         },
         -- Apply config
         config = function()
             require("0xDmtri.configs.lsp")
+        end,
+    },
+
+    -- LSP Enhance Plugin
+    {
+        "nvimdev/lspsaga.nvim",
+        name = "lspsaga",
+        event = "LspAttach",
+        dependencies = {
+            "nvim-tree/nvim-web-devicons",
+            "nvim-treesitter/nvim-treesitter",
+        },
+        config = function()
+            require("0xDmtri.configs.saga")
         end,
     },
 
