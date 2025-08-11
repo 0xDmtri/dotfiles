@@ -1,8 +1,5 @@
 -- [[ Configure LSP ]]
 
--- Setup neovim dev tools for lua
-require("neodev").setup({})
-
 -- helper for binds
 local nmap = function(bufnr, keys, func, desc)
     if desc then
@@ -242,6 +239,19 @@ blink.setup({
 
         ["<C-b>"] = { "scroll_documentation_up", "fallback" },
         ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+    },
+
+    sources = {
+        -- add lazydev to your completion providers
+        default = { "lazydev", "lsp", "path", "snippets", "buffer" },
+        providers = {
+            lazydev = {
+                name = "LazyDev",
+                module = "lazydev.integrations.blink",
+                -- make lazydev completions top priority (see `:h blink.cmp`)
+                score_offset = 100,
+            },
+        },
     },
 
     -- use LSP native signature help until this is stable
