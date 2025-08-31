@@ -224,7 +224,7 @@ require("lazy").setup({
     -- Python env selector
     {
         "linux-cultist/venv-selector.nvim",
-        branch = "regexp",
+        branch = "main",
         lazy = false,
         dependencies = {
             "nvim-lua/plenary.nvim",
