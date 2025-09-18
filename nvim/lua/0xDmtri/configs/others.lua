@@ -2,11 +2,16 @@ local M = {}
 
 M.lualine = {
     options = {
-        theme = "rose-pine",
+        theme = "auto",
         icons_enabled = true,
         component_separators = "|",
         section_separators = "",
         disabled_filetypes = { "lazy", "neo-tree" },
+    },
+
+    enable = {
+        terminal = true,
+        legacy_highlights = false,
     },
 }
 

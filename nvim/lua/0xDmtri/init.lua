@@ -148,6 +148,7 @@ require("lazy").setup({
         end,
         config = function(_, opts)
             require("rose-pine").setup(opts)
+            vim.opt.termguicolors = true
             vim.cmd.colorscheme("rose-pine")
         end,
     },
