@@ -12,6 +12,7 @@ require("nvim-treesitter.configs").setup({
         "tsx",
         "typescript",
         "javascript",
+        "julia",
         "vimdoc",
         "vim",
         "solidity",
