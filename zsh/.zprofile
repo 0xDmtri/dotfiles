@@ -18,4 +18,3 @@ fi
 
 # other env vars that need to be seen by GUI / scripts
 export EDITOR="nvim"
-export RPC_URL="http://127.0.0.1:8545"
