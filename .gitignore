@@ -1,0 +1,9 @@
+# Neovim
+nvim/.config/nvim/lazy-lock.json
+nvim/.config/nvim/lua/.luarc.json
+
+# Tmux
+tmux/.config/tmux/plugins/
+
+# OS
+.DS_Store
