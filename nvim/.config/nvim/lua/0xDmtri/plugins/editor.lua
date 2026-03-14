@@ -45,12 +45,23 @@ return {
 
     -- Claude Code integration
     {
-        "greggh/claude-code.nvim",
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-        },
+        "coder/claudecode.nvim",
+        dependencies = { "folke/snacks.nvim" },
         config = function()
-            require("claude-code").setup()
+            require("claudecode").setup()
+
+            require("which-key").add({
+                { "<leader>c", group = "+Claude" },
+                { "<leader>cc", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
+                { "<leader>cf", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
+                { "<leader>cr", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
+                { "<leader>cC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+                { "<leader>cb", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
+                { "<leader>cs", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+                { "<leader>cm", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select model" },
+                { "<leader>ca", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
+                { "<leader>cd", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Reject diff" },
+            })
         end,
     },
 }

@@ -20,8 +20,12 @@ return {
             },
         })
 
-        vim.keymap.set("n", "\\", ":Neotree toggle reveal_force_cwd <CR>", { silent = true })
-        vim.keymap.set("n", "<leader>\\b", ":Neotree source=buffers toggle<CR>", { desc = "Neotree Buffer" })
-        vim.keymap.set("n", "<leader>\\g", ":Neotree source=git_status toggle<CR>", { desc = "Neotree Git Status" })
+        require("which-key").add({
+            { "<leader>\\", group = "+Neotree" },
+            { "<leader>\\b", "<cmd>Neotree source=buffers toggle<cr>", desc = "Buffers" },
+            { "<leader>\\g", "<cmd>Neotree source=git_status toggle<cr>", desc = "Git Status" },
+        })
+
+        vim.keymap.set("n", "\\", "<cmd>Neotree toggle reveal_force_cwd<cr>", { silent = true })
     end,
 }
