@@ -1,45 +1,28 @@
 -- [[ Fuzzy Finder ]]
 
 return {
-    "nvim-telescope/telescope.nvim",
-    branch = "master",
-    dependencies = {
-        "nvim-lua/plenary.nvim",
-        "nvim-telescope/telescope-ui-select.nvim",
-        { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    opts = {
+        picker = { enabled = true },
+        indent = { enabled = true },
     },
-    config = function()
-        require("telescope").setup({
-            defaults = {
-                mappings = {
-                    i = {
-                        ["<C-u>"] = false,
-                        ["<C-d>"] = false,
-                    },
-                },
-            },
-        })
-
-        require("telescope").load_extension("fzf")
-        require("telescope").load_extension("harpoon")
-
-        local builtin = require("telescope.builtin")
+    config = function(_, opts)
+        local snacks = require("snacks")
+        snacks.setup(opts)
 
         require("which-key").add({
             { "<leader>s", group = "+Search" },
-            { "<leader>sG", builtin.git_files, desc = "Git Files" },
-            { "<leader>sf", builtin.find_files, desc = "Files" },
-            { "<leader>sh", builtin.help_tags, desc = "Help Tags" },
-            { "<leader>sw", builtin.grep_string, desc = "Word" },
-            { "<leader>sg", builtin.live_grep, desc = "Grep" },
+            { "<leader>sG", function() snacks.picker.git_files() end, desc = "Git Files" },
+            { "<leader>sf", function() snacks.picker.files() end, desc = "Files" },
+            { "<leader>sh", function() snacks.picker.help() end, desc = "Help Tags" },
+            { "<leader>sw", function() snacks.picker.grep_word() end, desc = "Word" },
+            { "<leader>sg", function() snacks.picker.grep() end, desc = "Grep" },
         })
 
-        vim.keymap.set("n", "<leader>?", builtin.oldfiles, { desc = "[?] Find recently opened files" })
-        vim.keymap.set("n", "<leader><space>", builtin.buffers, { desc = "[ ] Find existing buffers" })
-        vim.keymap.set("n", "<leader>/", function()
-            builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
-                previewer = false,
-            }))
-        end, { desc = "[/] Fuzzily search in current buffer" })
+        vim.keymap.set("n", "<leader>?", function() snacks.picker.recent() end, { desc = "[?] Find recently opened files" })
+        vim.keymap.set("n", "<leader><space>", function() snacks.picker.buffers() end, { desc = "[ ] Find existing buffers" })
+        vim.keymap.set("n", "<leader>/", function() snacks.picker.lines() end, { desc = "[/] Fuzzily search in current buffer" })
     end,
 }

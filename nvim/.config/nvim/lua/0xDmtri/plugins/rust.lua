@@ -19,7 +19,7 @@ return {
                 capabilities = capabilities,
                 standalone = false,
                 hover_actions = { auto_focus = true },
-                runnables = { use_telescope = true },
+                runnables = { use_telescope = false },
                 default_settings = {
                     ["rust-analyzer"] = {
                         checkOnSave = true,

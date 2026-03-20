@@ -24,9 +24,6 @@ return {
                 "GitSignsChange",
                 "GitSignsDelete",
 
-                "TelescopeNormal",
-                "TelescopeBorder",
-
                 "SagaNormal",
                 "SagaBorder",
             },

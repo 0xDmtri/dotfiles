@@ -33,10 +33,15 @@ return {
         ft = "python",
         dependencies = {
             "nvim-lua/plenary.nvim",
-            "nvim-telescope/telescope.nvim",
         },
         config = function()
-            require("venv-selector").setup({})
+            require("venv-selector").setup({
+                settings = {
+                    options = {
+                        picker = "snacks",
+                    },
+                },
+            })
         end,
     },
 
@@ -46,7 +51,7 @@ return {
     -- Claude Code integration
     {
         "coder/claudecode.nvim",
-        dependencies = { "folke/snacks.nvim" },
+        dependencies = { "folke/snacks.nvim", "folke/which-key.nvim" },
         config = function()
             require("claudecode").setup()
 
