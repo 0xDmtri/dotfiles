@@ -51,23 +51,25 @@ return {
     -- Claude Code integration
     {
         "coder/claudecode.nvim",
-        dependencies = { "folke/snacks.nvim", "folke/which-key.nvim" },
-        config = function()
-            require("claudecode").setup()
-
-            require("which-key").add({
-                { "<leader>c", group = "+Claude" },
-                { "<leader>cc", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
-                { "<leader>cf", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
-                { "<leader>cr", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
-                { "<leader>cC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
-                { "<leader>cb", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
-                { "<leader>cs", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
-                { "<leader>cs", "<cmd>ClaudeCodeTreeAdd<cr>", desc = "Add file", ft = { "neo-tree", "oil", "netrw" } },
-                { "<leader>cm", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select model" },
-                { "<leader>ca", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
-                { "<leader>cd", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Reject diff" },
-            })
-        end,
+        dependencies = { "folke/snacks.nvim" },
+        config = true,
+        keys = {
+            { "<leader>c", nil, desc = "+Claude" },
+            { "<leader>cc", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
+            { "<leader>cf", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
+            { "<leader>cr", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
+            { "<leader>cC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+            { "<leader>cb", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
+            { "<leader>cs", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+            {
+                "<leader>cs",
+                "<cmd>ClaudeCodeTreeAdd<cr>",
+                desc = "Add file",
+                ft = { "neo-tree", "oil", "netrw" },
+            },
+            { "<leader>cm", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select model" },
+            { "<leader>ca", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
+            { "<leader>cd", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Reject diff" },
+        },
     },
 }
