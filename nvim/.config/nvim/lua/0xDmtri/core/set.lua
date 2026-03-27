@@ -74,6 +74,22 @@ vim.diagnostic.config({
 -- Python Neovim plugin
 vim.g.python3_host_prog = "/Users/dmtri/.pyenv/versions/nvim/bin/python"
 
+-- Return to last edit position when reopening files
+vim.api.nvim_create_autocmd("BufReadPost", {
+    callback = function()
+        local mark = vim.api.nvim_buf_get_mark(0, '"')
+        local lines = vim.api.nvim_buf_line_count(0)
+        if mark[1] > 0 and mark[1] <= lines then
+            pcall(vim.api.nvim_win_set_cursor, 0, mark)
+        end
+    end,
+})
+
+-- Auto-resize splits on terminal resize
+vim.api.nvim_create_autocmd("VimResized", {
+    command = "wincmd =",
+})
+
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })

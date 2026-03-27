@@ -1,4 +1,4 @@
--- [[ Fuzzy Finder ]]
+-- [[ Snacks ]]
 
 return {
     "folke/snacks.nvim",
@@ -7,6 +7,9 @@ return {
     opts = {
         picker = { enabled = true },
         indent = { enabled = true },
+        input = { enabled = true },
+        notifier = { enabled = true, timeout = 3000 },
+        words = { enabled = true },
     },
     config = function(_, opts)
         local snacks = require("snacks")
@@ -22,7 +25,7 @@ return {
         })
 
         vim.keymap.set("n", "<leader>?", function() snacks.picker.recent() end, { desc = "[?] Find recently opened files" })
-        vim.keymap.set("n", "<leader><space>", function() snacks.picker.buffers() end, { desc = "[ ] Find existing buffers" })
+        vim.keymap.set("n", "<leader><space>", function() snacks.picker.smart() end, { desc = "[ ] Smart find" })
         vim.keymap.set("n", "<leader>/", function() snacks.picker.lines() end, { desc = "[/] Fuzzily search in current buffer" })
     end,
 }

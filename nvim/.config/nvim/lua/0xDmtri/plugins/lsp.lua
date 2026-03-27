@@ -25,8 +25,12 @@ local lsp_attach = function(client, bufnr)
     nmap(bufnr, "K", "<cmd>Lspsaga hover_doc<CR>", "Hover Documentation")
 
     -- LSP x Snacks Picker
-    nmap(bufnr, "<leader>ss", function() Snacks.picker.lsp_symbols() end, "Symbols")
-    nmap(bufnr, "<leader>sd", function() Snacks.picker.diagnostics() end, "Diagnostics")
+    nmap(bufnr, "<leader>ss", function()
+        Snacks.picker.lsp_symbols()
+    end, "Symbols")
+    nmap(bufnr, "<leader>sd", function()
+        Snacks.picker.diagnostics()
+    end, "Diagnostics")
 
     -- in INSERT mode only
     vim.keymap.set("i", "<C-s>", vim.lsp.buf.signature_help, { buffer = bufnr, desc = "Signature Help" })

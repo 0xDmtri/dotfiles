@@ -20,12 +20,6 @@ vim.keymap.set("i", "<C-j>", "<down>")
 vim.keymap.set("i", "<C-k>", "<up>")
 vim.keymap.set("i", "<C-l>", "<right>")
 
--- ctrl + h,j,k,l for window navigation in terminal mode
-vim.keymap.set("t", "<C-h>", "<cmd>wincmd h<cr>")
-vim.keymap.set("t", "<C-j>", "<cmd>wincmd j<cr>")
-vim.keymap.set("t", "<C-k>", "<cmd>wincmd k<cr>")
-vim.keymap.set("t", "<C-l>", "<cmd>wincmd l<cr>")
-
 -- Disable default keymaps
 vim.keymap.del("n", "grr")
 vim.keymap.del("n", "grn")

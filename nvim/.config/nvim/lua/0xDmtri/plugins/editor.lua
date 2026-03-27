@@ -52,11 +52,29 @@ return {
     {
         "coder/claudecode.nvim",
         dependencies = { "folke/snacks.nvim" },
-        config = true,
+        opts = {
+            terminal = {
+                snacks_win_opts = {
+                    position = "float",
+                    width = 0.9,
+                    height = 0.9,
+                    keys = {
+                        claude_hide = {
+                            "<C-,>",
+                            function(self)
+                                self:hide()
+                            end,
+                            mode = "t",
+                            desc = "Hide Claude",
+                        },
+                    },
+                },
+            },
+        },
         keys = {
+            { "<C-,>", "<cmd>ClaudeCodeFocus<cr>", desc = "Toggle Claude", mode = { "n", "x" } },
             { "<leader>c", nil, desc = "+Claude" },
             { "<leader>cc", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
-            { "<leader>cf", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
             { "<leader>cr", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
             { "<leader>cC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
             { "<leader>cb", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
