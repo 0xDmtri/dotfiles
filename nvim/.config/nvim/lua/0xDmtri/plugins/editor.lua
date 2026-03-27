@@ -63,6 +63,7 @@ return {
                 { "<leader>cC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
                 { "<leader>cb", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
                 { "<leader>cs", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+                { "<leader>cs", "<cmd>ClaudeCodeTreeAdd<cr>", desc = "Add file", ft = { "neo-tree", "oil", "netrw" } },
                 { "<leader>cm", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select model" },
                 { "<leader>ca", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
                 { "<leader>cd", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Reject diff" },

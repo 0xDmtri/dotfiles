@@ -14,17 +14,17 @@ vim.keymap.set("x", "<leader>p", [["_dP]])
 vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
 vim.keymap.set("n", "<leader>Y", [["+Y]])
 
--- Fuck this shitty shit
-vim.keymap.set("n", "Q", "<nop>")
-
--- Fuck that shit too
-vim.keymap.set("n", "q", "<nop>")
-
 -- ctrl + h,j,k,l for insert mode
 vim.keymap.set("i", "<C-h>", "<left>")
 vim.keymap.set("i", "<C-j>", "<down>")
 vim.keymap.set("i", "<C-k>", "<up>")
 vim.keymap.set("i", "<C-l>", "<right>")
+
+-- ctrl + h,j,k,l for window navigation in terminal mode
+vim.keymap.set("t", "<C-h>", "<cmd>wincmd h<cr>")
+vim.keymap.set("t", "<C-j>", "<cmd>wincmd j<cr>")
+vim.keymap.set("t", "<C-k>", "<cmd>wincmd k<cr>")
+vim.keymap.set("t", "<C-l>", "<cmd>wincmd l<cr>")
 
 -- Disable default keymaps
 vim.keymap.del("n", "grr")
