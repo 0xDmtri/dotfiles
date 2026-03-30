@@ -2,7 +2,7 @@
 
 return {
     "mrcjkb/rustaceanvim",
-    version = "^6",
+    version = "^8",
     lazy = false,
     dependencies = { "saghen/blink.cmp" },
     config = function()
