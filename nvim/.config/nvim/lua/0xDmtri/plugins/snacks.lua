@@ -10,6 +10,7 @@ return {
         input = { enabled = true },
         notifier = { enabled = true, timeout = 3000 },
         words = { enabled = true },
+        scroll = { enabled = true },
     },
     init = function()
         -- Wire up vim.ui overrides early so other plugins see them
