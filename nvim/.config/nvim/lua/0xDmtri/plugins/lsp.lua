@@ -26,10 +26,10 @@ local lsp_attach = function(client, bufnr)
 
     -- LSP x Snacks Picker
     nmap(bufnr, "<leader>ss", function()
-        Snacks.picker.lsp_symbols()
+        require("snacks").picker.lsp_symbols()
     end, "Symbols")
     nmap(bufnr, "<leader>sd", function()
-        Snacks.picker.diagnostics()
+        require("snacks").picker.diagnostics()
     end, "Diagnostics")
 
     -- in INSERT mode only
