@@ -26,7 +26,7 @@ return {
                     icons_enabled = true,
                     component_separators = "|",
                     section_separators = "",
-                    disabled_filetypes = { "lazy", "neo-tree" },
+                    disabled_filetypes = { "lazy", "snacks_picker_list" },
                 },
 
                 enable = {

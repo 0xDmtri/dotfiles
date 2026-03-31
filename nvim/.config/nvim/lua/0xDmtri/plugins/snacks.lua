@@ -5,7 +5,15 @@ return {
     priority = 1000,
     lazy = false,
     opts = {
-        picker = { enabled = true },
+        explorer = { replace_netrw = true },
+        picker = {
+            enabled = true,
+            sources = {
+                explorer = {
+                    layout = { layout = { position = "right" } },
+                },
+            },
+        },
         indent = { enabled = true },
         input = { enabled = true },
         notifier = { enabled = true, timeout = 3000 },
@@ -72,5 +80,9 @@ return {
         vim.keymap.set("n", "<leader>/", function()
             snacks.picker.lines()
         end, { desc = "[/] Fuzzily search in current buffer" })
+
+        vim.keymap.set("n", "\\", function()
+            snacks.explorer()
+        end, { desc = "File Explorer" })
     end,
 }

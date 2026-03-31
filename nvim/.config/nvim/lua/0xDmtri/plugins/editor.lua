@@ -83,7 +83,7 @@ return {
                 "<leader>cs",
                 "<cmd>ClaudeCodeTreeAdd<cr>",
                 desc = "Add file",
-                ft = { "neo-tree", "oil", "netrw" },
+                ft = { "snacks_picker_list", "oil", "netrw" },
             },
             { "<leader>cm", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select model" },
             { "<leader>ca", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
