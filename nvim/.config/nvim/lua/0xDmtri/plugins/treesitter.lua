@@ -28,6 +28,7 @@ return {
                 "toml",
                 "html",
                 "css",
+                "regex",
             })
 
             vim.treesitter.language.register("markdown", "mdx")
