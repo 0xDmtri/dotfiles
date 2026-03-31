@@ -4,29 +4,30 @@ return {
     {
         "nvim-treesitter/nvim-treesitter",
         branch = "main",
+        lazy = false,
         build = ":TSUpdate",
         config = function()
-            require("nvim-treesitter").setup({
-                ensure_installed = {
-                    "c",
-                    "go",
-                    "lua",
-                    "python",
-                    "rust",
-                    "zig",
-                    "tsx",
-                    "typescript",
-                    "javascript",
-                    "julia",
-                    "vimdoc",
-                    "vim",
-                    "solidity",
-                    "markdown",
-                    "markdown_inline",
-                    "toml",
-                    "html",
-                    "css",
-                },
+            require("nvim-treesitter").setup()
+
+            require("nvim-treesitter").install({
+                "c",
+                "go",
+                "lua",
+                "python",
+                "rust",
+                "zig",
+                "tsx",
+                "typescript",
+                "javascript",
+                "julia",
+                "vimdoc",
+                "vim",
+                "solidity",
+                "markdown",
+                "markdown_inline",
+                "toml",
+                "html",
+                "css",
             })
 
             vim.treesitter.language.register("markdown", "mdx")

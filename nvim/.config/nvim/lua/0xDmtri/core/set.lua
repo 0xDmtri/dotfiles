@@ -67,9 +67,6 @@ vim.diagnostic.config({
     severity_sort = true,
 })
 
--- Python Neovim plugin
-vim.g.python3_host_prog = "/Users/dmtri/.pyenv/versions/nvim/bin/python"
-
 -- Return to last edit position when reopening files
 vim.api.nvim_create_autocmd("BufReadPost", {
     callback = function()
