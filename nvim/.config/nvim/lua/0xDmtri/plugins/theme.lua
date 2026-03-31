@@ -2,7 +2,7 @@
 
 return {
     {
-        "rose-pine/neovim",
+        "0xDmtri/neovim",
         name = "rose-pine",
         priority = 1000,
         config = function()

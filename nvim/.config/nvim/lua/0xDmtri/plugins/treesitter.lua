@@ -32,6 +32,16 @@ return {
             })
 
             vim.treesitter.language.register("markdown", "mdx")
+
+            -- Enable treesitter highlighting for all installed parsers
+            vim.api.nvim_create_autocmd("FileType", {
+                callback = function(args)
+                    if pcall(vim.treesitter.start, args.buf) then
+                        -- Disable legacy syntax when treesitter is active
+                        vim.bo[args.buf].syntax = ""
+                    end
+                end,
+            })
         end,
     },
 
