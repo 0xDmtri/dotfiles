@@ -11,6 +11,15 @@ return {
             sources = {
                 explorer = {
                     layout = { layout = { position = "right" } },
+                    win = {
+                        list = {
+                            wo = { winfixwidth = true },
+                            keys = {
+                                ["s"] = "edit_split",
+                                ["v"] = "edit_vsplit",
+                            },
+                        },
+                    },
                 },
             },
         },
@@ -19,15 +28,6 @@ return {
         notifier = { enabled = true, timeout = 3000 },
         words = { enabled = true },
     },
-    init = function()
-        -- Wire up vim.ui overrides early so other plugins see them
-        vim.ui.select = function(...)
-            return require("snacks").picker.select(...)
-        end
-        vim.ui.input = function(...)
-            return require("snacks").input(...)
-        end
-    end,
     config = function(_, opts)
         local snacks = require("snacks")
         snacks.setup(opts)

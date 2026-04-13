@@ -31,6 +31,9 @@ vim.o.mouse = "a"
 -- Make default split below
 vim.opt.splitbelow = true
 
+-- Prevent explorer toggle from resizing existing splits
+vim.o.equalalways = false
+
 -- Sync clipboard between OS and Neovim.
 -- Remove this option if you want your OS clipboard to remain independent.
 -- See `:help 'clipboard'`
