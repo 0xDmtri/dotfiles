@@ -48,46 +48,61 @@ return {
     -- Huff syntax highlighting
     { "mouseless0x/vim-huff", ft = "huff" },
 
-    -- Claude Code integration
+    -- Codex integration
     {
-        "coder/claudecode.nvim",
+        "ishiooon/codex.nvim",
         dependencies = { "folke/snacks.nvim" },
+        cmd = {
+            "Codex",
+            "CodexFocus",
+            "CodexAdd",
+            "CodexSend",
+            "CodexTreeAdd",
+            "CodexSelectModel",
+            "CodexDiffAccept",
+            "CodexDiffDeny",
+        },
         opts = {
+            terminal_cmd = "/opt/homebrew/bin/codex",
+            keymaps = false,
+            status_indicator = {
+                enabled = false,
+            },
             terminal = {
+                provider = "snacks",
                 snacks_win_opts = {
                     position = "float",
                     width = 0.9,
                     height = 0.9,
                     keys = {
-                        claude_hide = {
+                        codex_hide = {
                             "<C-,>",
                             function(self)
                                 self:hide()
                             end,
                             mode = "t",
-                            desc = "Hide Claude",
+                            desc = "Hide Codex",
                         },
                     },
                 },
             },
         },
         keys = {
-            { "<C-,>", "<cmd>ClaudeCodeFocus<cr>", desc = "Toggle Claude", mode = { "n", "x" } },
-            { "<leader>c", nil, desc = "+Claude" },
-            { "<leader>cc", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
-            { "<leader>cr", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
-            { "<leader>cC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
-            { "<leader>cb", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
-            { "<leader>cs", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+            { "<C-,>", "<cmd>CodexFocus<cr>", desc = "Toggle Codex", mode = { "n", "x" } },
+            { "<leader>c", nil, desc = "+Codex" },
+            { "<leader>cc", "<cmd>Codex<cr>", desc = "Toggle Codex" },
+            { "<leader>cr", "<cmd>Codex resume --last<cr>", desc = "Resume Codex" },
+            { "<leader>cb", "<cmd>CodexAdd %<cr>", desc = "Add current buffer" },
+            { "<leader>cs", "<cmd>CodexSend<cr>", mode = "v", desc = "Send to Codex" },
             {
                 "<leader>cs",
-                "<cmd>ClaudeCodeTreeAdd<cr>",
+                "<cmd>CodexTreeAdd<cr>",
                 desc = "Add file",
-                ft = { "snacks_picker_list", "oil", "netrw" },
+                ft = { "neo-tree", "oil" },
             },
-            { "<leader>cm", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select model" },
-            { "<leader>ca", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
-            { "<leader>cd", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Reject diff" },
+            { "<leader>cm", "<cmd>CodexSelectModel<cr>", desc = "Select model" },
+            { "<leader>ca", "<cmd>CodexDiffAccept<cr>", desc = "Accept diff" },
+            { "<leader>cd", "<cmd>CodexDiffDeny<cr>", desc = "Reject diff" },
         },
     },
 }
