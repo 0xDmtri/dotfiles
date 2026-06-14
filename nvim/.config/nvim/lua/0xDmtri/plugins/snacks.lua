@@ -33,6 +33,7 @@ return {
         snacks.setup(opts)
 
         require("which-key").add({
+            { "<leader>g", group = "+Git" },
             { "<leader>s", group = "+Search" },
             {
                 "<leader>sG",
@@ -80,6 +81,10 @@ return {
         vim.keymap.set("n", "<leader>/", function()
             snacks.picker.lines()
         end, { desc = "[/] Fuzzily search in current buffer" })
+
+        vim.keymap.set({ "n", "v" }, "<leader>gB", function()
+            snacks.gitbrowse()
+        end, { desc = "Git browse" })
 
         vim.keymap.set("n", "\\", function()
             snacks.explorer()
