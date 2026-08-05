@@ -11,7 +11,7 @@ return {
                 dark_variant = "main",
                 enable = {
                     terminal = true,
-                    legacy_highlights = false,
+                    legacy_highlights = true,
                 },
                 styles = {
                     transparency = vim.g.transparent_enabled,
