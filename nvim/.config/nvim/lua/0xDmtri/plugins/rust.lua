@@ -10,7 +10,7 @@ return {
 
         vim.g.rustaceanvim = {
             tools = {
-                hover_actions = {
+                float_win_config = {
                     auto_focus = true,
                 },
                 enable_clippy = true,
@@ -18,19 +18,19 @@ return {
             server = {
                 capabilities = capabilities,
                 standalone = false,
-                hover_actions = { auto_focus = true },
                 default_settings = {
                     ["rust-analyzer"] = {
                         checkOnSave = true,
                         check = {
                             command = "clippy",
                             extraArgs = { "--all", "--no-deps", "--", "-W", "clippy::all" },
-                            allFeatures = true,
+                            features = "all",
                         },
                         cargo = {
-                            allFeatures = true,
-                            loadOutDirsFromCheck = true,
-                            runBuildScripts = true,
+                            features = "all",
+                            buildScripts = {
+                                enable = true,
+                            },
                         },
                         procMacro = {
                             enable = true,

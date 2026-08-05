@@ -9,8 +9,13 @@ return {
             require("rose-pine").setup({
                 variant = "auto",
                 dark_variant = "main",
-                disable_background = vim.g.transparent_enabled,
-                disable_float_background = vim.g.transparent_enabled,
+                enable = {
+                    terminal = true,
+                    legacy_highlights = false,
+                },
+                styles = {
+                    transparency = vim.g.transparent_enabled,
+                },
             })
             vim.cmd.colorscheme("rose-pine")
         end,
@@ -27,11 +32,6 @@ return {
                     component_separators = "|",
                     section_separators = "",
                     disabled_filetypes = { "lazy", "snacks_picker_list" },
-                },
-
-                enable = {
-                    terminal = true,
-                    legacy_highlights = false,
                 },
             })
         end,

@@ -18,7 +18,9 @@ local lsp_attach = function(client, bufnr)
     nmap(bufnr, "gi", "<cmd>Lspsaga finder imp<CR>", "Implementation")
 
     -- Frequently used mappings
-    nmap(bufnr, "<leader>a", "<cmd>Lspsaga code_action<CR>", "Code Action")
+    local code_action = vim.bo[bufnr].filetype == "rust" and "<cmd>RustLsp codeAction<CR>"
+        or "<cmd>Lspsaga code_action<CR>"
+    nmap(bufnr, "<leader>a", code_action, "Code Action")
     nmap(bufnr, "<leader>n", "<cmd>Lspsaga rename<CR>", "Rename")
     nmap(bufnr, "<leader>d", "<cmd>Lspsaga finder tyd<CR>", "Type Definition")
     nmap(bufnr, "<leader>o", "<cmd>Lspsaga outline<CR>", "Outline")
@@ -55,6 +57,26 @@ return {
         "mason-org/mason-lspconfig.nvim",
         dependencies = {
             { "mason-org/mason.nvim", config = true },
+            {
+                "WhoIsSethDaniel/mason-tool-installer.nvim",
+                dependencies = { "mason-org/mason.nvim" },
+                opts = {
+                    ensure_installed = {
+                        { "lua-language-server", version = "3.18.2" },
+                        { "typescript-language-server", version = "5.3.0" },
+                        { "nomicfoundation-solidity-language-server", version = "0.8.25" },
+                        { "pyright", version = "1.1.411" },
+                        { "ruff", version = "0.16.1" },
+                        { "stylua", version = "v2.5.2" },
+                        { "prettier", version = "3.9.6" },
+                        { "solhint", version = "6.2.3" },
+                    },
+                    auto_update = false,
+                    run_on_start = true,
+                    start_delay = 3000,
+                    debounce_hours = 24,
+                },
+            },
             "neovim/nvim-lspconfig",
             { "j-hui/fidget.nvim", opts = {} },
             "saghen/blink.cmp",
@@ -62,15 +84,7 @@ return {
         config = function()
             local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-            require("mason-lspconfig").setup({
-                ensure_installed = {
-                    "lua_ls",
-                    "ts_ls",
-                    "solidity_ls_nomicfoundation",
-                    "pyright",
-                    "ruff",
-                },
-            })
+            require("mason-lspconfig").setup()
 
             vim.lsp.config("*", {
                 capabilities = capabilities,
@@ -105,22 +119,12 @@ return {
                 },
             })
 
+            local lsp_group = vim.api.nvim_create_augroup("UserLspConfig", { clear = true })
             vim.api.nvim_create_autocmd("LspAttach", {
+                group = lsp_group,
                 callback = function(args)
                     local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
                     lsp_attach(client, args.buf)
-                end,
-            })
-
-            vim.api.nvim_create_autocmd("LspDetach", {
-                callback = function(args)
-                    local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
-                    if client:supports_method("textDocument/formatting") then
-                        vim.api.nvim_clear_autocmds({
-                            event = "BufWritePre",
-                            buffer = args.buf,
-                        })
-                    end
                 end,
             })
         end,

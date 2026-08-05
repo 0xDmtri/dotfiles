@@ -8,7 +8,7 @@ return {
             if ok then
                 fidget.setup({
                     notification = {
-                        window = { winblend = transparent and 0 or 100 },
+                        window = { winblend = transparent and 100 or 0 },
                     },
                 })
             end

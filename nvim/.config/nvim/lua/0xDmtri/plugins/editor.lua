@@ -63,7 +63,6 @@ return {
             "CodexDiffDeny",
         },
         opts = {
-            terminal_cmd = "/opt/homebrew/bin/codex",
             keymaps = false,
             status_indicator = {
                 enabled = false,

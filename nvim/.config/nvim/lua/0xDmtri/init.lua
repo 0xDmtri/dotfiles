@@ -10,7 +10,19 @@ require("0xDmtri.core.remap")
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
     local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-    local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+    local lockfile = vim.fn.stdpath("config") .. "/lazy-lock.json"
+    local lazy_commit
+
+    if vim.fn.filereadable(lockfile) == 1 then
+        local ok, lock = pcall(vim.json.decode, table.concat(vim.fn.readfile(lockfile), "\n"))
+        if ok and lock["lazy.nvim"] then
+            lazy_commit = lock["lazy.nvim"].commit
+        end
+    end
+
+    local clone_command = lazy_commit and { "git", "clone", "--filter=blob:none", lazyrepo, lazypath }
+        or { "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath }
+    local out = vim.fn.system(clone_command)
     if vim.v.shell_error ~= 0 then
         vim.api.nvim_echo({
             { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
@@ -19,6 +31,19 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
         }, true, {})
         vim.fn.getchar()
         os.exit(1)
+    end
+
+    if lazy_commit then
+        out = vim.fn.system({ "git", "-C", lazypath, "checkout", "--detach", lazy_commit })
+        if vim.v.shell_error ~= 0 then
+            vim.api.nvim_echo({
+                { "Failed to check out the locked lazy.nvim revision:\n", "ErrorMsg" },
+                { out, "WarningMsg" },
+                { "\nPress any key to exit..." },
+            }, true, {})
+            vim.fn.getchar()
+            os.exit(1)
+        end
     end
 end
 vim.opt.rtp:prepend(lazypath)
