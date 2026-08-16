@@ -39,9 +39,22 @@ export RPC_URL="http://127.0.0.1:8545"
 
 # ────────────────────────────────────────
 # SSH-agent startup
+#
+# All shells share one agent, reached through the stable symlink below.
+# This openssh binds its sockets under ~/.ssh/agent — inside $HOME, which is
+# never cleared at boot the way /tmp is — and nothing reaps dead ones. So
+# "a socket file is there" does NOT mean "an agent is listening": after an
+# unclean shutdown the leftover path outlives the process behind it.
+# Probe the agent instead. ssh-add exits 2 only when it can't reach one
+# (0 = keys listed, 1 = reachable but holding none).
 export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
 
-if [[ ! -S "$SSH_AUTH_SOCK" ]]; then
-    eval "$(/opt/homebrew/bin/ssh-agent -s)" >/dev/null
+/opt/homebrew/bin/ssh-add -l >/dev/null 2>&1
+if (( $? == 2 )); then
+    rm -f "$SSH_AUTH_SOCK"
+    eval "$(/opt/homebrew/bin/ssh-agent -s)" >/dev/null   # overwrites SSH_AUTH_SOCK with the real path
     ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/ssh_auth_sock"
+    export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
+    # id_ed25519_sk left out on purpose: it would demand a security-key touch every boot
+    /opt/homebrew/bin/ssh-add ~/.ssh/id_ed25519 ~/.ssh/id_ecdsa >/dev/null 2>&1
 fi
