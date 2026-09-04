@@ -11,37 +11,57 @@ end
 
 -- LSP settings on attach
 local lsp_attach = function(client, bufnr)
+    local snacks = require("snacks")
+
     -- GOTO mappings
-    nmap(bufnr, "gr", "<cmd>Lspsaga finder ref<CR>", "References")
-    nmap(bufnr, "gd", "<cmd>Lspsaga finder def<CR>", "Definition")
+    nmap(bufnr, "gr", function()
+        snacks.picker.lsp_references({ include_current = true })
+    end, "References")
+    nmap(bufnr, "gd", function()
+        snacks.picker.lsp_definitions({ include_current = true })
+    end, "Definition")
     nmap(bufnr, "gD", vim.lsp.buf.declaration, "Declaration")
-    nmap(bufnr, "gi", "<cmd>Lspsaga finder imp<CR>", "Implementation")
+    nmap(bufnr, "gi", function()
+        snacks.picker.lsp_implementations({ include_current = true })
+    end, "Implementation")
 
     -- Frequently used mappings
-    local code_action = vim.bo[bufnr].filetype == "rust" and "<cmd>RustLsp codeAction<CR>"
-        or "<cmd>Lspsaga code_action<CR>"
-    nmap(bufnr, "<leader>a", code_action, "Code Action")
-    nmap(bufnr, "<leader>n", "<cmd>Lspsaga rename<CR>", "Rename")
-    nmap(bufnr, "<leader>d", "<cmd>Lspsaga finder tyd<CR>", "Type Definition")
-    nmap(bufnr, "<leader>o", "<cmd>Lspsaga outline<CR>", "Outline")
-    nmap(bufnr, "K", "<cmd>Lspsaga hover_doc<CR>", "Hover Documentation")
+    nmap(bufnr, "<leader>a", vim.lsp.buf.code_action, "Code Action")
+    nmap(bufnr, "<leader>n", vim.lsp.buf.rename, "Rename")
+    nmap(bufnr, "<leader>d", function()
+        snacks.picker.lsp_type_definitions({ include_current = true })
+    end, "Type Definition")
+    nmap(bufnr, "<leader>o", function()
+        snacks.picker.lsp_symbols({ layout = { preset = "sidebar", layout = { position = "right" } } })
+    end, "Outline")
+    nmap(bufnr, "K", function()
+        vim.lsp.buf.hover({ border = "rounded" })
+    end, "Hover Documentation")
 
     -- LSP x Snacks Picker
     nmap(bufnr, "<leader>ss", function()
-        require("snacks").picker.lsp_symbols()
+        snacks.picker.lsp_symbols()
     end, "Symbols")
     nmap(bufnr, "<leader>sd", function()
-        require("snacks").picker.diagnostics()
+        snacks.picker.diagnostics()
     end, "Diagnostics")
 
     -- in INSERT mode only
     vim.keymap.set("i", "<C-s>", vim.lsp.buf.signature_help, { buffer = bufnr, desc = "Signature Help" })
 
     -- Diagnostic keymaps
-    nmap(bufnr, "<leader>D", "<cmd>Lspsaga show_cursor_diagnostics<CR>", "Diagnostics")
-    nmap(bufnr, "[d", "<cmd>Lspsaga diagnostic_jump_prev<CR>", "Prev diagnostic msg")
-    nmap(bufnr, "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>", "Next diagnostic msg")
-    nmap(bufnr, "<leader>q", "<cmd>Lspsaga show_buf_diagnostics<CR>", "Open diagnostic list")
+    nmap(bufnr, "<leader>D", function()
+        vim.diagnostic.open_float({ scope = "cursor", border = "rounded", source = "if_many" })
+    end, "Diagnostics")
+    nmap(bufnr, "[d", function()
+        vim.diagnostic.jump({ count = -1, float = true })
+    end, "Prev diagnostic msg")
+    nmap(bufnr, "]d", function()
+        vim.diagnostic.jump({ count = 1, float = true })
+    end, "Next diagnostic msg")
+    nmap(bufnr, "<leader>q", function()
+        snacks.picker.diagnostics_buffer()
+    end, "Open diagnostic list")
 
     -- if available, toggle inlay-hints
     if client.server_capabilities.inlayHintProvider then
@@ -116,34 +136,6 @@ return {
                     lsp_attach(client, args.buf)
                 end,
             })
-        end,
-    },
-
-    {
-        "nvimdev/lspsaga.nvim",
-        name = "lspsaga",
-        event = "LspAttach",
-        dependencies = {
-            "nvim-tree/nvim-web-devicons",
-            "nvim-treesitter/nvim-treesitter",
-        },
-        config = function()
-            require("lspsaga").setup({
-                move_in_saga = {
-                    prev = "<C-k>",
-                    next = "<C-j>",
-                },
-                finder_action_keys = {
-                    open = "<CR>",
-                },
-                definition_action_keys = {
-                    edit = "<CR>",
-                },
-                ui = {
-                    border = "rounded",
-                },
-            })
-            vim.keymap.set({ "n", "t" }, "<C-\\>", "<cmd>Lspsaga term_toggle<CR>")
         end,
     },
 }

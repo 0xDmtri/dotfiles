@@ -9,7 +9,39 @@ return {
         config = function()
             require("nvim-treesitter").setup()
 
+            -- Markview's AsciiDoc support uses two parsers from the same repository.
+            vim.api.nvim_create_autocmd("User", {
+                group = vim.api.nvim_create_augroup("markview_asciidoc_parsers", { clear = true }),
+                pattern = "TSUpdate",
+                desc = "Register Markview's AsciiDoc parsers",
+                callback = function()
+                    local parsers = require("nvim-treesitter.parsers")
+
+                    parsers.asciidoc = {
+                        install_info = {
+                            branch = "master",
+                            location = "tree-sitter-asciidoc",
+                            queries = "queries/asciidoc",
+                            url = "https://github.com/cathaysia/tree-sitter-asciidoc",
+                        },
+                        requires = { "asciidoc_inline" },
+                        tier = 2,
+                    }
+                    parsers.asciidoc_inline = {
+                        install_info = {
+                            branch = "master",
+                            location = "tree-sitter-asciidoc_inline",
+                            queries = "queries/asciidoc_inline",
+                            url = "https://github.com/cathaysia/tree-sitter-asciidoc",
+                        },
+                        tier = 2,
+                    }
+                end,
+            })
+
             require("nvim-treesitter").install({
+                "asciidoc",
+                "asciidoc_inline",
                 "c",
                 "go",
                 "lua",
@@ -27,11 +59,14 @@ return {
                 "markdown_inline",
                 "toml",
                 "html",
+                "latex",
+                "typst",
+                "yaml",
                 "css",
                 "regex",
             })
 
-            vim.treesitter.language.register("markdown", "mdx")
+            vim.treesitter.language.register("markdown", { "mdx", "quarto", "rmd" })
 
             -- Enable treesitter highlighting for all installed parsers
             vim.api.nvim_create_autocmd("FileType", {

@@ -89,5 +89,16 @@ return {
         vim.keymap.set("n", "\\", function()
             snacks.explorer()
         end, { desc = "File Explorer" })
+
+        vim.keymap.set({ "n", "t" }, "<C-\\>", function()
+            snacks.terminal.toggle(nil, {
+                win = {
+                    position = "float",
+                    width = 0.7,
+                    height = 0.7,
+                    border = "rounded",
+                },
+            })
+        end, { desc = "Toggle Terminal" })
     end,
 }
